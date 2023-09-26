@@ -1,27 +1,27 @@
 import VueRouter from "vue-router";
-import { Message } from "element-ui";
+import { Notification } from "element-ui";
 const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import('@/components/Home'),
+    component: () => import('../components/Home.vue'),
     children: [
       {
         path: "/mask",
         name: "mask",
-        component: () => import('@/components/mask'),
+        component: () => import('../components/mask.vue'),
         children: [
 
           {
             path: "login",
             name: "login",
-            component: () => import('@/components/Login'),
+            component: () => import('../components/Login.vue'),
             meta: { title: '登录' }
           },
           {
             path: "register",
             name: "register",
-            component: () => import('@/components/Register'),
+            component: () => import('../components/Register.vue'),
             meta: { title: '注册' }
           },
         ]
@@ -32,13 +32,13 @@ const routes = [
         meta: {
           permissionsId: 1
         },
-        component: () => import('@/views/userinfo')
+        component: () => import('../views/userinfo.vue')
       },
 
       {
         path: "todos",
         name: "todos",
-        component: () => import('@/views/todos')
+        component: () => import('../views/todos.vue')
       },
 
       {
@@ -47,19 +47,19 @@ const routes = [
         meta: {
           permissionsId: 1
         },
-        component: () => import('@/views/user')
+        component: () => import('../views/user.vue')
       },
 
       {
         path: "music",
         name: "music",
-        component: () => import('@/views/music')
+        component: () => import('../views/music.vue')
       },
 
       {
         path: "404",
         name: "404",
-        component: () => import('@/views/404')
+        component: () => import('../views/404.vue')
       },
     ]
   }
@@ -82,7 +82,13 @@ router.beforeEach((to, from, next) => {
     && to.name !== 'home'
     && to.name !== 'todos'
     && !token) {
-    Message.error("请登录!")
+    Notification({
+      type: 'error',
+      message: '请登录',
+      offset: 80,
+      showClose: false,
+      duration: 1500
+    })
     next({ name: 'todos' })
   }
   if (to.meta.permissionsId

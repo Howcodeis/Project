@@ -27,7 +27,7 @@
     </div>
     <div class="sidernav">
       <!-- 头像部分 -->
-      <button class="avatar" @click="tologinandregister" v-if="isLogin">
+      <!-- <button class="avatar" @click="tologinandregister" v-if="isLogin">
         <img src="../assets/logo.png" alt="error" />
         <br />
         <span style="text-align: center">请登录</span>
@@ -42,14 +42,12 @@
         <div class="logout" @click="logout">
           <a href="#">logout</a>
         </div>
-      </button>
+      </button>-->
     </div>
     <div class="rightcontent">
-      <router-view v-slot="{Component}">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </div>
     <div class="footercontent">
       <!-- ended 歌曲或视频结束调用函数 -->
@@ -59,13 +57,7 @@
 </template>
 
 <script>
-// const items = document.querySelectorAll('.topnav button');
-// items.forEach(item => {
-//   item.addEventListener('click', function () {
-//     item.classList.add('active')
-//   })
-// });
-import todos from '@/views/todos.vue';
+import todos from '../views/todos.vue';
 export default {
   components: { todos },
   name: 'MyHome',
@@ -114,9 +106,11 @@ export default {
     // this.$bus.$on('login',token)
     this.$refs.playmusic.volume = 0.05
     // 读取userinfo
-    this.userinfo = JSON.parse(localStorage.getItem('userinfo')) || ''
-    if (this.userinfo.token) {
-      this.isLogin = false
+    if (!this.userinfo) {
+      this.userinfo = JSON.parse(localStorage.getItem('userinfo')) || ''
+      if (this.userinfo.token) {
+        this.isLogin = false
+      }
     }
   },
 }
@@ -127,38 +121,28 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  padding: 0;
-  margin: 0;
   background-size: cover;
   min-width: 600px;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
+  min-height: 600px;
+  background-color: #303049;
 }
 
-.fade-leave-from {
-  transform: translateX(0);
-}
-.fade-leave-to {
-  opacity: 0;
-  transform: translateX(200px);
-}
-
-.fade-enter-to {
-  transform: translateX(0);
-}
-
-.fade-enter-from {
-  transform: translateX(200px);
-}
-.topnav {
-  width: 60%;
-  height: 100%;
-  inset: 0 0 0 30%;
+.topcontent {
   position: relative;
+  width: 85%;
+  height: 10%;
+  top: 0;
+  left: 15%;
+  user-select: none;
   display: flex;
-  justify-content: space-between;
+}
+
+.topnav {
+  position: absolute;
+  width: 30%;
+  height: 60px;
+  right: 60px;
+  display: flex;
   align-items: center;
 }
 
@@ -169,64 +153,76 @@ export default {
   background: transparent;
   transition: all 0.3s;
 }
-.topnav button:hover {
-  background: #b3bdcd;
-  border-bottom: #2404f1 2px solid;
+.topnav button a:hover::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  width: 60px;
+  height: 2px;
+  bottom: 0;
+  background: #6bc6dd;
 }
+.topnav button a.router-link-active::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  width: 60px;
+  height: 2px;
+  bottom: 0;
+  background: #1279d8;
+}
+/* a.router-link-active::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  left: calc(10% - 10px);
+  bottom: 0;
+  background: #6bc6dd;
+} */
 
 .topnav button a {
   height: 100%;
-  color: rgb(96, 96, 94);
+  color: rgb(150, 169, 168);
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration: none;
 }
 
-/* .LeftNav {
-  position: absolute;
-  top: 10%;
-  width: 15%;
-  height: 90%;
-  user-select: none;
-  transition: all 0.6s;
-  overflow: hidden;
-}
-.LeftNav .nav:nth-child(1) {
-  border-top: 1px rgb(211, 211, 211) solid;
-}
-.LeftNav:hover {
-  user-select: none;
-  opacity: 1;
-  background: rgba(169, 166, 166, 0.2);
-} */
-
 .rightcontent {
-  position: absolute;
-  top: 10%;
-  left: 16%;
-  width: 80vw;
+  position: relative;
+  left: 15%;
+  width: 80%;
   height: 90%;
-  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
   text-align: center;
-  transition: all 0.3s;
-  border: 1px solid gray;
-  overflow: scroll;
 }
 
-.defaultCont {
-  position: relative;
-  user-select: none;
-}
-.topcontent {
-  position: relative;
-  width: 85%;
-  height: 10%;
-  top: 0;
-  left: 15%;
-  user-select: none;
+.rightcontent ::-webkit-scrollbar {
+  width: 0px;
 }
 .footercontent {
   width: 100px;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.fade-enter-to,
+.fade-leave {
+  visibility: visible;
+}
+.fade-enter {
+  visibility: hidden;
+  transform: translateY(500px);
+  opacity: 0;
+}
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

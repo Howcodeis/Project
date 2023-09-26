@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="musicbox">
     <h1 style="color: black;">HOT MUSIC</h1>
     <div>
       <ul>
@@ -20,5 +20,11 @@ export default {
 <style scoped>
 li {
   list-style: none;
+}
+.musicbox {
+  position: relative;
+  margin-top: 20%;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -33,9 +33,13 @@ export default {
   padding: 0;
   margin: 0;
 }
+body {
+  width: 100%;
+  height: 100%;
+}
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 1px;
 }
 
 ::-webkit-scrollbar-thumb {

@@ -4,12 +4,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router'
 import router from './router'
-import store from '@/store'
+import store from './store'
 import Axiosinterceptor from './utils/Axiosinterceptor'
 // 导入fontawesome
-import 'font-awesome/css/font-awesome.min.css'
+// import 'font-awesome/css/font-awesome.min.css'
 // 导入防止重复点击
-import PreventReClick from '@/utils/PreventReClick'
+import PreventReClick from './utils/PreventReClick'
 Vue.prototype.$http = Axiosinterceptor
 Vue.use(ElementUI)
 Vue.use(VueRouter)
