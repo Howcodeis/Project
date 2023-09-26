@@ -45,11 +45,9 @@
       </button>
     </div>
     <div class="rightcontent">
-      <router-view v-slot="{Component}">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </div>
     <div class="footercontent">
       <!-- ended 歌曲或视频结束调用函数 -->
@@ -59,12 +57,6 @@
 </template>
 
 <script>
-// const items = document.querySelectorAll('.topnav button');
-// items.forEach(item => {
-//   item.addEventListener('click', function () {
-//     item.classList.add('active')
-//   })
-// });
 import todos from '@/views/todos.vue';
 export default {
   components: { todos },
@@ -131,27 +123,27 @@ export default {
   margin: 0;
   background-size: cover;
   min-width: 600px;
+  background-color: #303049;
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.5s ease;
+  transition: all 3s ease;
 }
 
-.fade-leave-from {
-  transform: translateX(0);
+.fade-enter-to,
+.fade-leave {
+  visibility: visible;
+  opacity: 1;
+}
+
+.fade-enter {
+  visibility: hidden;
+  opacity: 0;
 }
 .fade-leave-to {
-  opacity: 0;
-  transform: translateX(200px);
+  display: none;
 }
 
-.fade-enter-to {
-  transform: translateX(0);
-}
-
-.fade-enter-from {
-  transform: translateX(200px);
-}
 .topnav {
   width: 60%;
   height: 100%;
@@ -205,19 +197,11 @@ export default {
   position: absolute;
   top: 10%;
   left: 16%;
-  width: 80vw;
+  width: 80%;
   height: 90%;
   color: #ffffff;
-  text-align: center;
-  transition: all 0.3s;
-  border: 1px solid gray;
-  overflow: scroll;
 }
 
-.defaultCont {
-  position: relative;
-  user-select: none;
-}
 .topcontent {
   position: relative;
   width: 85%;

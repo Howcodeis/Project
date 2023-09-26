@@ -1,5 +1,5 @@
 import VueRouter from "vue-router";
-import { Message } from "element-ui";
+import { Notification } from "element-ui";
 const routes = [
   {
     path: "/",
@@ -82,7 +82,13 @@ router.beforeEach((to, from, next) => {
     && to.name !== 'home'
     && to.name !== 'todos'
     && !token) {
-    Message.error("请登录!")
+    Notification({
+      type: 'error',
+      message: '请登录',
+      offset: 80,
+      showClose: false,
+      duration: 1500
+    })
     next({ name: 'todos' })
   }
   if (to.meta.permissionsId

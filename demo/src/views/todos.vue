@@ -1,7 +1,7 @@
 <template>
-  <div class="tipsbox">
-    <div class="toparea">
-      <div class="putin">
+  <div class="box">
+    <div class="topcontent">
+      <div class="inputcontent">
         <el-input
           type="text"
           v-model="text"
@@ -13,40 +13,38 @@
         <el-button plain type="success" @click="addtodo">添加到备忘录</el-button>
       </div>
     </div>
-    <div class="record">
-      <div class="stats1">
-        <span>已完成:{{ doneTodos.length }}</span>
-      </div>
-      <div class="stats2">
-        <span>{{ todos.length-doneTodos.length }}:未完成</span>
-      </div>
-    </div>
     <div class="contentbox">
-      <div class="notfinish">
+      <div class="todobox">
         <ul>
-          <!-- 遍历数组 -->
-          <li
-            v-for="todo,index in todos"
-            :key="index"
-            :title="todo.text"
-            :class="{complete: todo.done , notcomplete:!todo.done}"
-          >
-            <!-- @change checkbox 属性变化时函数执行 -->
-            <el-checkbox class="checkbox" type="checkbox" v-model="todo.done" title="done?" />
-            <!-- <span class="space" :class="{ active: todo.done }">
-              {{
-              todo.text
-              }}
-            </span>-->
-            <el-button plain class="del" @click="deltodo(todo)" round size="small">
-              <i class="el-icon-delete" title="delete"></i>
-            </el-button>
-            <slot name="todos" :todo="todo">{{ todo.text }}</slot>
-          </li>
+          <transition-group name="animateforli" appear tag="ul">
+            <!-- 遍历数组 -->
+            <li
+              class="list"
+              v-for="todo in todos"
+              :key="todo.id"
+              :title="todo.text"
+              :class="{finish: todo.done}"
+            >
+              <!-- @change checkbox 属性变化时函数执行 -->
+              <el-checkbox class="checkbox" type="checkbox" v-model="todo.done" title="done?" />
+              <el-button
+                plain
+                class="del el-icon-delete"
+                @click.prevent="deltodo(todo)"
+                round
+                size="small"
+                title="删除"
+              >
+                <!-- <i class="" title="delete"></i> -->
+              </el-button>
+              <div class="textspace" :class="{active : todo.done}">
+                <slot name="todos" :todo="todo">{{ todo.text }}</slot>
+              </div>
+            </li>
+          </transition-group>
         </ul>
       </div>
     </div>
-    <div class="footer"></div>
   </div>
 </template>
 
@@ -55,6 +53,7 @@ export default {
   name: 'MyTodos',
   data () {
     return {
+      id: 0,
       text: '',
       todos: [],
       doneTodos: []
@@ -72,7 +71,7 @@ export default {
           offset: 80
         })
       } else {
-        this.todos.push({ text: this.text, done: false })
+        this.todos.push({ id: this.id++, text: this.text, done: false })
         this.text = ''
       }
     },
@@ -114,63 +113,13 @@ export default {
 </script>
 
 <style scoped>
-.complete {
-  position: relative;
-}
-.complete:hover {
-  background: #a2e97f;
-}
-
-.notcomplete {
-  background: #929591;
-}
-.notcomplete:hover {
-  background: #515350;
-}
-
-li {
-  display: flex;
-  align-items: center;
-  position: relative;
-  list-style: none;
-  line-height: 30px;
-  overflow: hidden;
-  border: none;
-  border-bottom: 1px #fff solid;
-  transition: all 0.6s ease-in-out;
-  border-radius: 2px;
-  color: #fff;
-  background-color: gray;
-}
-li:hover .del {
-  display: inline-block;
-  color: #fff;
-}
-
-.del {
-  display: none;
-  position: absolute;
-  right: 2%;
-  cursor: pointer;
-  user-select: none;
-  background: transparent;
-  border: none;
-}
-.del:hover {
-  background: transparent;
-}
-.active {
-  text-decoration: line-through;
-}
-.tipsbox {
-  width: 100%;
-  height: 100%;
+.box {
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
   text-align: center;
 }
-.toparea {
+.topcontent {
   position: absolute;
   width: 100%;
   height: 25%;
@@ -178,44 +127,33 @@ li:hover .del {
   justify-content: center;
   align-items: center;
 }
-.putin {
+.inputcontent {
   position: relative;
   top: 10%;
   width: 45%;
 }
-.putin .el-input {
+.inputcontent .el-input {
+  transition: all 0.3s;
   margin-bottom: 10px;
 }
-.putin .el-input ::placeholder {
-  color: rgb(127, 127, 127);
+.inputcontent .el-input:hover {
+  transform: scale(1.1);
 }
-.putin .el-button {
+.inputcontent .el-input ::placeholder {
+  color: rgb(176, 173, 173);
+}
+.inputcontent .el-input :focus::placeholder {
+  color: transparent;
+}
+.inputcontent .el-button {
   width: 25%;
   min-width: 170px;
   transition: all 0.6s ease-in-out;
 }
-.putin .el-button:hover {
+.inputcontent .el-button:hover {
   background: #1346ee;
 }
 
-.record {
-  position: absolute;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-evenly;
-  top: 25%;
-  width: 100%;
-  height: 5%;
-  color: #000;
-}
-.stats1 ::before {
-  font-family: element-icons;
-  content: "\e79c";
-}
-.stats2 ::after {
-  font-family: element-icons;
-  content: "\e79d";
-}
 .contentbox {
   position: absolute;
   display: flex;
@@ -226,35 +164,76 @@ li:hover .del {
   overflow: scroll;
 }
 
-.notfinish {
+.todobox {
   position: relative;
   width: 45%;
   min-width: 425px;
   text-align: left;
 }
-.finish {
-  position: relative;
-  width: 45%;
-  text-align: left;
-  line-height: 50px;
-}
-.space {
-  height: 30px;
-  margin-left: 15px;
-  width: 350px;
+
+.textspace {
+  width: 330px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.footer {
-  background: #7b7979;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 3%;
-  user-select: none;
-}
 .checkbox {
-  margin-left: 5px;
+  margin: 0 10px;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  position: relative;
+  list-style: none;
+  line-height: 40px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: none;
+  border-bottom: 1px #fff solid;
+  transition: all 0.6s ease-in-out;
+  border-radius: 2px;
+  color: #fff;
+  background-color: rgb(58, 68, 86);
+}
+
+.list:hover {
+  background-color: #1f74be;
+}
+.list:hover .del {
+  background-color: transparent;
+  transform: scale(1);
+}
+.del {
+  position: absolute;
+  right: 2%;
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  transform: scale(0);
+  transition: all 0.3s;
+}
+
+.animateforli-enter,
+.animateforli.leave-to {
+  transform: translateX(300px);
+}
+
+.animateforli-enter-active,
+.animateforli.leave-active {
+  transition: all 0.3s ease;
+}
+
+.finish {
+  background-color: #605f5f;
+}
+.finish:hover {
+  background: #a2e97f;
+}
+
+.active {
+  text-decoration: line-through;
 }
 </style>
