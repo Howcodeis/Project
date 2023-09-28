@@ -2,8 +2,6 @@
   <div
     class="mask"
     v-loading="loading"
-    element-loading-text="拼命加载中"
-    element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <!-- 登陆页面 -->
@@ -65,7 +63,7 @@ export default {
     this.loading = true
     setTimeout(() => {
       this.loading = false
-    }, 2000)
+    }, 1000)
 
 
   },
@@ -104,7 +102,7 @@ export default {
   top: 0;
   z-index: 2;
   background-color: transparent;
-  background: url(../assets/image/nature-sunset.jpg) center no-repeat;
+  backdrop-filter: blur(5px);
   background-size: cover;
 }
 .loginbox {
@@ -115,7 +113,6 @@ export default {
   height: 600px;
   border: gray 1px solid;
   box-shadow: rgb(167, 152, 135) 3px 3px 20px;
-  background: url("../assets/image/city.jpg") no-repeat;
   background-size: cover;
   min-width: 800px;
 }

@@ -27,7 +27,7 @@
     </div>
     <div class="sidernav">
       <!-- 头像部分 -->
-      <!-- <button class="avatar" @click="tologinandregister" v-if="isLogin">
+      <button class="avatar" @click="toggleL_R" v-if="isLogin">
         <img src="../assets/logo.png" alt="error" />
         <br />
         <span style="text-align: center">请登录</span>
@@ -42,49 +42,35 @@
         <div class="logout" @click="logout">
           <a href="#">logout</a>
         </div>
-      </button>-->
+      </button>
     </div>
     <div class="rightcontent">
       <transition name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
     </div>
-    <div class="footercontent">
-      <!-- ended 歌曲或视频结束调用函数 -->
-      <audio :src="musicUrl" ref="playmusic" autoplay muted @ended="autofinished"></audio>
-    </div>
   </div>
 </template>
 
 <script>
-import todos from '../views/todos.vue';
 export default {
-  components: { todos },
   name: 'MyHome',
   // provide & inject
   inject: ['reload'],
   data () {
     return {
       isLogin: true,
-      isShowcont: false,
-      bgmId: Math.floor(Math.random() * 5),
-      musicList: [
-        // require('@/assets/music/Kiki.mp3'),
-        // require('@/assets/music/Moonlight.mp3'),
-        // require("@/assets/music/You're My Everything.mp3"),
-        // require("@/assets/music/That Summer.mp3"),
-        // require("@/assets/music/Self Love伴奏.wav")
-      ],
       userinfo: ''
     }
   },
   methods: {
-    tologinandregister () {
+    toggleL_R () {
       this.$router.push('mask').catch(err => {
         console.log(err);
       })
-    },
-    touserconfg () {
+    }
+    ,
+    toUserConfig () {
       this.$router.push('userinfo')
     },
 
@@ -92,19 +78,8 @@ export default {
       localStorage.removeItem('userinfo')
       window.location.reload()
     },
-    autofinished () {
-      this.bgmId = Math.floor(Math.random() * 5)
-    },
-  },
-  computed: {
-    musicUrl () {
-      return this.musicList[this.bgmId]
-    }
   },
   mounted () {
-    // 全局总线事件
-    // this.$bus.$on('login',token)
-    this.$refs.playmusic.volume = 0.05
     // 读取userinfo
     if (!this.userinfo) {
       this.userinfo = JSON.parse(localStorage.getItem('userinfo')) || ''
@@ -150,9 +125,11 @@ export default {
   flex: 1;
   height: 100%;
   border: none;
+  min-width: 60px;
   background: transparent;
   transition: all 0.3s;
 }
+
 .topnav button a:hover::after {
   content: "";
   position: absolute;
@@ -162,6 +139,7 @@ export default {
   bottom: 0;
   background: #6bc6dd;
 }
+
 .topnav button a.router-link-active::after {
   content: "";
   position: absolute;
@@ -171,16 +149,6 @@ export default {
   bottom: 0;
   background: #1279d8;
 }
-/* a.router-link-active::after {
-  content: "";
-  position: absolute;
-  display: inline-block;
-  width: 30px;
-  height: 2px;
-  left: calc(10% - 10px);
-  bottom: 0;
-  background: #6bc6dd;
-} */
 
 .topnav button a {
   height: 100%;
@@ -189,6 +157,10 @@ export default {
   justify-content: center;
   align-items: center;
   text-decoration: none;
+}
+
+.sidernav {
+  position: absolute;
 }
 
 .rightcontent {
@@ -202,26 +174,22 @@ export default {
   text-align: center;
 }
 
-.rightcontent ::-webkit-scrollbar {
-  width: 0px;
-}
-.footercontent {
-  width: 100px;
-}
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.4s ease-out;
 }
 
 .fade-enter-to,
 .fade-leave {
   visibility: visible;
 }
+
 .fade-enter {
   visibility: hidden;
-  transform: translateY(500px);
+  transform: scale(0);
   opacity: 0;
 }
+
 .fade-leave-to {
   opacity: 0;
 }

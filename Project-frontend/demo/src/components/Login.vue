@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { setUserInfo } from '../utils/userinfo'
+import { setItem } from '../utils/localstorage'
 export default {
   name: "MyLogin",
   inject: ['reload'],
@@ -25,28 +27,19 @@ export default {
           username: this.username,
           password: this.password
         }
-      }).then(result => {
+      }).then(async result => {
         const { msg, code } = result.data
         const { token, user } = result.data.data
-        console.log(result.data.data);
         if (code == 20000) {
           this.$message({
             message: msg,
             type: 'success',
             duration: 2000
           });
-          // 全局总线事件 传数据
-          // this.$bus.$emit('loginback', token)
           const { userId, username, permissionsId } = user
-          const userinfo = {
-            userId: userId,
-            username: username,
-            token: token,
-            permissionsId: permissionsId
-          }
-          localStorage.setItem('userinfo', JSON.stringify(userinfo))
-          this.$store.state.userinfo = JSON.stringify(userinfo)
-          this.$router.push('/todos')
+          setItem(JSON.stringify(setUserInfo(userId, username, permissionsId, token)))
+          this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo'))
+          await this.$router.push('/todos')
           this.reload()
         } else {
           this.$message({
@@ -69,9 +62,11 @@ export default {
   margin-top: 40px;
   margin-bottom: 10px;
 }
+
 .logincss div:nth-child(2) {
   margin-bottom: 20px;
 }
+
 .el-input {
   min-width: 120px;
 }
