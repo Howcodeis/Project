@@ -6,8 +6,6 @@ import VueRouter from 'vue-router'
 import router from './router'
 import store from './store'
 import Axiosinterceptor from './utils/Axiosinterceptor'
-// 导入fontawesome
-// import 'font-awesome/css/font-awesome.min.css'
 // 导入防止重复点击
 import PreventReClick from './utils/PreventReClick'
 Vue.prototype.$http = Axiosinterceptor
@@ -24,9 +22,10 @@ new Vue({
   store
 }).$mount('#app')
 
-window.addEventListener('popstate', function () {
-  this.window.history.pushState(null, null, this.document.URL)
-})
+// 禁止浏览器前进后退
+// window.addEventListener('popstate', function () {
+//   this.window.history.pushState(null, null, this.document.URL)
+// })
 // 防止重复提交登陆注册
 // Vue.directive('preventClick', {
 //   inserted (el, binding) {

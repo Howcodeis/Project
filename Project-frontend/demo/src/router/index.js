@@ -12,7 +12,7 @@ const routes = [
       {
         path: "/mask",
         name: "mask",
-        component: () => import('../components/mask.vue'),
+        component: () => import('../components/Mask.vue'),
         children: [
 
           {
@@ -36,13 +36,13 @@ const routes = [
           title: '成员管理',
           permissionsId: 1,
         },
-        component: () => import('../views/userinfo.vue')
+        component: () => import('../views/UserInfo.vue')
       },
 
       {
         path: "todos",
         name: "todos",
-        component: () => import('../views/todos.vue')
+        component: () => import('../views/Todos.vue')
       },
 
       {
@@ -50,13 +50,13 @@ const routes = [
         name: "user",
         meta: {
         },
-        component: () => import('../views/user.vue')
+        component: () => import('../views/User.vue')
       },
 
       {
         path: "music",
         name: "music",
-        component: () => import('../views/music.vue')
+        component: () => import('../views/Music.vue')
       },
 
       {
@@ -71,9 +71,9 @@ const router = new VueRouter({
   // 路径模式
   mode: 'history',
   // 禁止浏览器前进后退
-  scrollBehavior: () => {
-    history.pushState(null, null, document.URL)
-  },
+  // scrollBehavior: () => {
+  //   history.pushState(null, null, document.URL)
+  // },
   routes
 })
 const whiteList = ['mask', 'login', 'register', 'home', 'todos', 'music']

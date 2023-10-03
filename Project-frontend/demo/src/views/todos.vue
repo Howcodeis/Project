@@ -20,7 +20,7 @@
           <transition-group name="animateforli" appear tag="ul">
             <!-- 遍历数组 -->
             <li class="list" v-for="todo in todos" :key="todo.id" :title="todo.text" :class="{ finish: todo.done }">
-              <el-checkbox class="checkbox" @change="singlecheck" type="checkbox" v-model="todo.done" title="done?" />
+              <el-checkbox class="checkbox" type="checkbox" v-model="todo.done" title="done?" />
               <el-button plain class="del el-icon-delete" @click.stop="deltodo(todo)" round size="small"
                 title="删除"></el-button>
               <div class="textspace" :class="{ active: todo.done }">
@@ -39,12 +39,12 @@ import { Message } from 'element-ui'
 
 export default {
   name: 'MyTodos',
-  inject: ['reload'],
   data () {
     return {
       id: '',
       text: '',
       checkedAll: false,
+      SelectState: [],
       todos: [],
       doneTodos: []
     }
@@ -93,14 +93,9 @@ export default {
         todo.done = this.checkedAll
       })
     },
-    singlecheck () {
-      const SelectState = this.todos.filter(todo => { return todo.done })
-      this.checkedAll = (SelectState.length === this.todos.length)
-    },
     // 删除所选
     removeAll () {
-      const SelectState = this.todos.filter(todo => { return todo.done })
-      if (SelectState.length) {
+      if (this.SelectState.length) {
         this.$confirm('确定要删除所选吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -126,7 +121,6 @@ export default {
     if (this.todos) {
       this.todos = JSON.parse(localStorage.getItem('todos')) || []
     }
-    this.singlecheck()
   },
   watch: {
     // 监听todos变化 及时保存
@@ -136,9 +130,10 @@ export default {
       // handeler 处理变化值
       handler (newvalue) {
         localStorage.setItem('todos', JSON.stringify(newvalue))
+        this.SelectState = this.todos.filter(todo => { return todo.done })
+        this.checkedAll = (this.SelectState.length === this.todos.length)
       },
     },
-
   }
 }
 </script>
@@ -181,10 +176,6 @@ export default {
 
 .inputcontent .el-input ::placeholder {
   color: rgb(176, 173, 173);
-}
-
-.inputcontent .el-input :focus::placeholder {
-  color: transparent;
 }
 
 .inputcontent .el-button {

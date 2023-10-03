@@ -19,7 +19,7 @@ export default {
   },
   data () {
     const musicList = () => {
-      return new URL('./assets/music/Kiki.mp3', import.meta.url).href
+      return new URL('./assets/music/Self Love.wav', import.meta.url).href
     }
     return {
       isRouterAlive: true,

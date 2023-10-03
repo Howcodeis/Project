@@ -1,22 +1,21 @@
 <template>
-  <div
-    class="mask"
-    v-loading="loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-  >
+  <div class="mask">
     <!-- 登陆页面 -->
     <div class="loginbox">
       <div class="leftarea"></div>
       <div class="rightarea">
         <div class="rightup">
-          <el-button-group>
-            <router-link :to="{name:'login'}">
-              <el-button>去登陆</el-button>
+          <el-button>
+            <router-link :to="{ name: 'login' }">
+              去登陆
             </router-link>
-            <router-link :to="{name:'register'}">
-              <el-button>去注册</el-button>
+          </el-button>
+          <el-button>
+            <router-link :to="{ name: 'register' }">
+              去注册
             </router-link>
-          </el-button-group>
+          </el-button>
+
         </div>
 
         <div class="infobox">
@@ -76,24 +75,30 @@ export default {
   margin-top: 40px;
   margin-bottom: 10px;
 }
+
 .logincss div:nth-child(2) {
   margin-bottom: 20px;
 }
+
 .el-input {
   min-width: 120px;
 }
+
 .loginappear-enter-active {
   transition: all 0.3s ease-in;
   transition-delay: 0.3s;
 }
+
 .loginappear-leave-active {
   transition: all 0.3s ease-in;
 }
+
 .loginappear-enter,
 .loginappear-leave-to {
   transform: translateY(100px);
   opacity: 0;
 }
+
 .mask {
   position: fixed;
   width: 100%;
@@ -105,6 +110,7 @@ export default {
   backdrop-filter: blur(5px);
   background-size: cover;
 }
+
 .loginbox {
   position: relative;
   top: 100px;
@@ -116,6 +122,7 @@ export default {
   background-size: cover;
   min-width: 800px;
 }
+
 .infobox {
   width: 60%;
   height: 200px;
@@ -136,6 +143,7 @@ export default {
   border: none;
   border-right: 1px rgb(167, 152, 135) solid;
 }
+
 .rightarea {
   position: absolute;
   right: 0;
@@ -144,15 +152,18 @@ export default {
   border: none;
   text-align: center;
 }
+
 .line {
   width: 40%;
   height: 0px;
   flex-grow: 1;
   border-top: 1px solid #000;
 }
+
 .text {
   margin: 0 5px;
 }
+
 .other {
   position: absolute;
   top: 0;
@@ -163,6 +174,7 @@ export default {
   align-items: center;
   user-select: none;
 }
+
 .downright {
   position: absolute;
   top: 70%;
@@ -171,17 +183,48 @@ export default {
   height: 150px;
   border: none;
 }
+
 .rightup {
   position: absolute;
   top: 5%;
   width: 100%;
-  height: 100px;
+  height: 15%;
   display: flex;
   justify-content: center;
-  align-items: center;
   border: none;
   border-bottom: rgb(167, 152, 135) 1px solid;
 }
+
+.rightup button {
+  height: 100%;
+  background: transparent;
+  border: none;
+}
+
+.rightup button a {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #ffff;
+}
+
+.rightup button a:hover {
+  color: #1279d8;
+}
+
+.rightup button a.router-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  width: 42px;
+  height: 2px;
+  display: inline-block;
+  background: #1279d8;
+}
+
 .cancel {
   position: absolute;
   top: 0;
@@ -192,9 +235,11 @@ export default {
   transition: all 0.4s;
   cursor: pointer;
 }
+
 .cancel:hover {
   transform: scale(1.2);
 }
+
 .el-input {
   border: 0;
   outline: none;

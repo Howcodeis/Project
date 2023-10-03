@@ -7,8 +7,7 @@
 </template>
 
 <script>
-import { setUserInfo } from '../utils/userinfo'
-import { setItem } from '../utils/localstorage'
+import { loginBack } from '../utils/Login_RegisterBack';
 export default {
   name: "MyLogin",
   inject: ['reload'],
@@ -20,40 +19,9 @@ export default {
   },
   methods: {
     login () {
-      this.$http({
-        method: 'get',
-        url: '/login',
-        params: {
-          username: this.username,
-          password: this.password
-        }
-      }).then(async result => {
-        const { msg, code } = result.data
-        const { token, user } = result.data.data
-        if (code == 20000) {
-          this.$message({
-            message: msg,
-            type: 'success',
-            duration: 2000
-          });
-          const { userId, username, permissionsId } = user
-          setItem(JSON.stringify(setUserInfo(userId, username, permissionsId, token)))
-          this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo'))
-          await this.$router.push('/todos')
-          this.reload()
-        } else {
-          this.$message({
-            message: msg,
-            type: 'warning',
-            duration: 2000
-          })
-        }
-      })
-        .catch(error => {
-          console.log(error);
-        })
-    }
-  },
+      loginBack(this.username, this.password, this.reload)
+    },
+  }
 }
 </script>
 

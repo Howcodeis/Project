@@ -27,11 +27,13 @@
     </div>
     <div class="sidernav">
       <!-- 头像部分 -->
+      <!-- 登陆前 -->
       <button class="avatar" @click="toggleL_R" v-if="isLogin">
         <img src="../assets/logo.png" alt="error" />
         <br />
         <span style="text-align: center">请登录</span>
       </button>
+      <!-- 登陆后 -->
       <button class="avatar-login" v-if="!isLogin">
         <img src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="error" />
         <br />
