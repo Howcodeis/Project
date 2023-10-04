@@ -13,7 +13,9 @@
         <ul>
           <li style="list-style: none; display: flex; justify-content: space-between;" v-show="todos.length">
             <!-- @change checkbox 属性变化时函数执行 -->
+            <!-- 全选按钮 -->
             <el-checkbox type="checkbox" v-model="checkedAll" @change="togglechecked" style="margin-bottom: 10px;" />
+            <!-- 全删按钮 -->
             <el-button class="el-icon-delete" size="small" v-show="todos.length" @click="removeAll"
               style="background: transparent; border:none; color:aliceblue"></el-button>
           </li>

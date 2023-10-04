@@ -74,6 +74,9 @@ export default {
 </script>
 
 <style scoped>
+.loginBox {
+  margin-top: 10px;
+}
 .el-input {
   min-width: 120px;
 }

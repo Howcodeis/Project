@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { getSentence } from './utils/FamousSentence'
 export default {
   name: 'App',
   provide () {
@@ -42,6 +43,12 @@ export default {
   },
   mounted () {
     this.$bus.$on('toplay', this.playMusic)
+    getSentence().then((result) => {
+      const { hitokoto } = result.data
+      this.$store.state.sentence = hitokoto
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 }
 </script>

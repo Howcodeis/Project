@@ -12,7 +12,8 @@ const mutations = {
 //准备state对象——保存具体的数据
 const state = {
   userinfo: '',
-  text: ''
+  text: '',
+  sentence: ''
 }
 
 //创建并暴露store
