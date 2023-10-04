@@ -1,5 +1,4 @@
 
-
 export function setUserInfo (...value) {
   const userinfo = {
     userId: value[0],
@@ -8,4 +7,8 @@ export function setUserInfo (...value) {
     permissionsId: value[2]
   }
   return userinfo
+}
+
+export function setItem (value) {
+  localStorage.setItem('userinfo', value)
 }
