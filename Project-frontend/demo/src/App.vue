@@ -26,7 +26,6 @@ export default {
       musicList
     }
   },
-
   methods: {
     reload () {
       this.isRouterAlive = false

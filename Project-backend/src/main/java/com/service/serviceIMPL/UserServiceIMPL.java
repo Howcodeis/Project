@@ -20,12 +20,12 @@ public class UserServiceIMPL implements UserService {
 //        查询用户
         User user = userMapper.select(username);
 //        判断输入是否为空
-        if (username == null || password == null) {
-            throw new NormalException("账密不能为空");
-        } else if (Objects.requireNonNull(username).trim().isEmpty()
-                || Objects.requireNonNull(password).trim().isEmpty()) {
-            throw new NormalException("账密不能为空");
-        }
+//        if (username == null || password == null) {
+//            throw new NormalException("账密不能为空");
+//        } else if (Objects.requireNonNull(username).trim().isEmpty()
+//                || Objects.requireNonNull(password).trim().isEmpty()) {
+//            throw new NormalException("账密不能为空");
+//        }
 //        检查是否存在用户
         if (user == null) {
             throw new NormalException("账户不存在");
@@ -41,12 +41,12 @@ public class UserServiceIMPL implements UserService {
 //        查询用户
         User user = userMapper.select(username);
 ////        判断输入是否为空
-        if (username == null || password == null) {
-            throw new NormalException("账密不能为空");
-        } else if (Objects.requireNonNull(username).trim().isEmpty()
-                || Objects.requireNonNull(password).trim().isEmpty()) {
-            throw new NormalException("账密不能为空");
-        }
+//        if (username == null || password == null) {
+//            throw new NormalException("账密不能为空");
+//        } else if (Objects.requireNonNull(username).trim().isEmpty()
+//                || Objects.requireNonNull(password).trim().isEmpty()) {
+//            throw new NormalException("账密不能为空");
+//        }
 //        检查是否存在用户
         if (user == null) {
             userMapper.save(username, password);
