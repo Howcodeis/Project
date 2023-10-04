@@ -1,5 +1,5 @@
 <template>
-  <div class="BigBox">
+  <div class="bigBox">
     <!-- 顶部栏 -->
     <div class="topcontent">
       <div class="topnav">
@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style scoped>
-.BigBox {
+.bigBox {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -174,6 +174,11 @@ export default {
   justify-content: center;
   flex-wrap: nowrap;
   text-align: center;
+  overflow: auto;
+}
+
+.rightcontent::-webkit-scrollbar {
+  width: 2px;
 }
 
 .fade-enter-active,

@@ -200,8 +200,12 @@ export default {
   width: 45%;
   min-width: 425px;
   text-align: left;
+  overflow: auto;
 }
 
+.todobox::-webkit-scrollbar{
+  width: 1px;
+}
 .textspace {
   width: 330px;
   overflow: hidden;
@@ -219,6 +223,7 @@ export default {
   align-items: center;
   list-style: none;
   line-height: 40px;
+  width: 95%;
   overflow: hidden;
   margin-bottom: 20px;
   border: none;
