@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { getSentence } from './utils/FamousSentence'
+import { getSentence } from '@/utils/FamousSentence'
 export default {
   name: 'App',
   provide () {
@@ -20,7 +20,7 @@ export default {
   },
   data () {
     const musicList = () => {
-      return new URL('./assets/music/Self Love.wav', import.meta.url).href
+      return new URL('@/assets/music/Self Love.wav', import.meta.url).href
     }
     return {
       isRouterAlive: true,
@@ -57,15 +57,11 @@ export default {
 * {
   padding: 0;
   margin: 0;
-}
-
-body {
-  width: 100%;
-  height: 100%;
+  text-decoration: none;
 }
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 1px;
 }
 
 ::-webkit-scrollbar-thumb {

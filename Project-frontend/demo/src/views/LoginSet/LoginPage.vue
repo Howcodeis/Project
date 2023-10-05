@@ -15,8 +15,8 @@
 
 <script>
 import { Message } from 'element-ui'
-import { setUserInfo, setItem } from '../utils/SetUserInfo'
-import { loginBack } from '../utils/Login_RegisterBack'
+import { setUserData, setItem } from '@/utils/setUserInfo'
+import { loginBack } from '@/utils/LoginAndRegisterBack'
 export default {
   name: "MyLogin",
   inject: ['reload'],
@@ -49,9 +49,9 @@ export default {
                 duration: 2000
               })
               const { userId, username, permissionsId } = user
-              setItem(JSON.stringify(setUserInfo(userId, username, permissionsId, token)))
-              this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo'))
-              await this.$router.replace('/todos')
+              setItem(JSON.stringify(setUserData(userId, username, permissionsId, token)))
+              this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo-save'))
+              await this.$router.replace('/todolist')
               this.reload()
             } else {
               Message.warning({
@@ -77,6 +77,7 @@ export default {
 .loginBox {
   margin-top: 10px;
 }
+
 .el-input {
   min-width: 120px;
 }

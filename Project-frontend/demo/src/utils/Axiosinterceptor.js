@@ -1,22 +1,25 @@
-import router from "../router";
+import router from "./RouterRules";
 import axios from "axios";
+import nProgress from "nprogress";
 
-const Axiosinterceptor = axios.create({
+const AxiosInterceptor = axios.create({
   baseURL: "http://localhost:8088",
   timeout: 5000
 })
 
-Axiosinterceptor.interceptors.request.use(
+AxiosInterceptor.interceptors.request.use(
   config => {
-    const { token } = JSON.parse(localStorage.getItem("userinfo")) || ''
+    nProgress.start()
+    const { token } = JSON.parse(localStorage.getItem("userinfo-save")) || ''
     if (token) config.headers.Authorization = `Bearer ${token}`
     return config;
   },
   error => {
     Promise.reject(error)
   })
-Axiosinterceptor.interceptors.response.use(
+AxiosInterceptor.interceptors.response.use(
   response => {
+    nProgress.done()
     return Promise.resolve(response)
   },
   error => {
@@ -25,4 +28,4 @@ Axiosinterceptor.interceptors.response.use(
   }
 )
 
-export default Axiosinterceptor
+export default AxiosInterceptor

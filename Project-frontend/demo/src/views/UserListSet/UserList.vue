@@ -1,6 +1,10 @@
 <template>
-  <div class="infobox">
-
+  <div v-if="isPermission = 1" class="noPermiss">
+    <h1>
+      <p>抱歉!您当前权限无法查看，请联系管理员！</p>
+    </h1>
+  </div>
+  <div v-else class="infobox">
   </div>
 </template>
 
@@ -10,10 +14,11 @@ export default {
   inject: ['reload'],
   data () {
     return {
-      userList: JSON.parse(localStorage.getItem('userlist')) || [],
+      userList: JSON.parse(localStorage.getItem('userlist-save')) || [],
       loading: true,
       currentPage: 1,
       pageUserList: '',
+      isPermission: this.$store.state.isPermission
     }
   },
   methods: {
@@ -61,7 +66,7 @@ export default {
       url: '/user',
     }).then(res => {
       this.userList = res.data
-      localStorage.setItem('userlist', JSON.stringify(this.userList))
+      localStorage.setItem('userlist-save', JSON.stringify(this.userList))
     }).catch(err => {
       console.log(err);
     })
@@ -69,7 +74,7 @@ export default {
   watch: {
     userList: {
       handler (newvalue) {
-        localStorage.setItem('userlist', JSON.stringify(newvalue))
+        localStorage.setItem('userlist-save', JSON.stringify(newvalue))
       }
     }
   }
@@ -83,5 +88,19 @@ export default {
   width: 100%;
   justify-content: center;
   align-items: center;
+}
+
+.noPermiss {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  color: black;
 }
 </style>

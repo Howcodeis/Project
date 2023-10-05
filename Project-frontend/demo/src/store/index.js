@@ -13,7 +13,8 @@ const mutations = {
 const state = {
   userinfo: '',
   text: '',
-  sentence: ''
+  sentence: '',
+  isPermission: 1
 }
 
 //创建并暴露store

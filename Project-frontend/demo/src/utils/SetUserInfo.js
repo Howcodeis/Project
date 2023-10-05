@@ -1,5 +1,5 @@
 
-export function setUserInfo (...value) {
+export function setUserData (...value) {
   const userinfo = {
     userId: value[0],
     username: value[1],
@@ -10,5 +10,5 @@ export function setUserInfo (...value) {
 }
 
 export function setItem (value) {
-  localStorage.setItem('userinfo', value)
+  localStorage.setItem('userinfo-save', value)
 }

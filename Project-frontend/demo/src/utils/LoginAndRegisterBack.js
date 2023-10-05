@@ -1,7 +1,7 @@
-import Axiosinterceptor from './Axiosinterceptor'
+import AxiosInterceptor from './AxiosInterceptor'
 
 export function loginBack (username, password) {
-  return Axiosinterceptor({
+  return AxiosInterceptor({
     method: 'get',
     url: '/login',
     params: {
@@ -11,7 +11,7 @@ export function loginBack (username, password) {
   })
 }
 export function registerBack (username, password) {
-  return Axiosinterceptor({
+  return AxiosInterceptor({
     method: 'post',
     url: '/register',
     params: {

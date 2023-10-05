@@ -51,7 +51,7 @@ export default {
 
   methods: {
     canclemask () {
-      this.$router.push({ name: 'todos' })
+      this.$router.push({ name: 'todolist' })
     },
 
   },
@@ -69,15 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.logincss div:nth-child(1) {
-  margin-top: 40px;
-  margin-bottom: 10px;
-}
-
-.logincss div:nth-child(2) {
-  margin-bottom: 20px;
-}
-
 .el-input {
   min-width: 120px;
 }
@@ -205,7 +196,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-decoration: none;
   color: #ffff;
 }
 

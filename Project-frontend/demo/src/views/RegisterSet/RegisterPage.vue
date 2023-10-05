@@ -21,7 +21,7 @@
 
 <script>
 import { Message } from 'element-ui';
-import { registerBack } from '../utils/Login_RegisterBack';
+import { registerBack } from '@/utils/LoginAndRegisterBack';
 export default {
   name: "MyRegister",
   data () {

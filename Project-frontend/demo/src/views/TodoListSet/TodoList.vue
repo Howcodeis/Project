@@ -1,18 +1,18 @@
 <template>
   <div class="box">
-    <div class="topcontent">
-      <div class="inputcontent">
-        <el-input type="text" v-model="text" clearable placeholder="写下你想做的事吧!!!"
+    <div class="topContent">
+      <div class="inputContent">
+        <el-input type="text" v-model="text" clearable placeholder="写下你想做的亦或者是名句吧!加油陌生人!"
           @keydown.native.enter="addtodo"></el-input>
         <!-- 侧边栏提示 需要plain 属性 -->
         <el-button plain type="success" @click="addtodo">添加到备忘录</el-button>
       </div>
     </div>
-    <div class="contentbox">
-      <div class="todobox">
+    <div class="contentBox">
+      <div class="todoBox">
         <ul>
           <li style="list-style: none; display: flex; justify-content: space-between;" v-show="todos.length">
-            <!-- @change checkbox 属性变化时函数执行 -->
+            <!-- @change checkBox 属性变化时函数执行 -->
             <!-- 全选按钮 -->
             <el-checkbox type="checkbox" v-model="checkedAll" @change="togglechecked" style="margin-bottom: 10px;" />
             <!-- 全删按钮 -->
@@ -22,10 +22,10 @@
           <transition-group name="animateforli" appear tag="ul">
             <!-- 遍历数组 -->
             <li class="list" v-for="todo in todos" :key="todo.id" :title="todo.text" :class="{ finish: todo.done }">
-              <el-checkbox class="checkbox" type="checkbox" v-model="todo.done" title="done?" />
+              <el-checkbox class="checkStyle" type="checkbox" v-model="todo.done" title="done?" />
               <el-button plain class="del el-icon-delete" @click.stop="deltodo(todo)" round size="small"
                 title="删除"></el-button>
-              <div class="textspace" :class="{ active: todo.done }">
+              <div class="textSpace" :class="{ active: todo.done }">
                 <slot name="todos" :todo="todo">{{ todo.text }}</slot>
               </div>
             </li>
@@ -121,7 +121,7 @@ export default {
   mounted () {
     // 获取本地todos列表
     if (this.todos) {
-      this.todos = JSON.parse(localStorage.getItem('todos')) || []
+      this.todos = JSON.parse(localStorage.getItem('todos-save')) || []
     }
   },
   watch: {
@@ -131,7 +131,7 @@ export default {
       deep: true,
       // handeler 处理变化值
       handler (newvalue) {
-        localStorage.setItem('todos', JSON.stringify(newvalue))
+        localStorage.setItem('todos-save', JSON.stringify(newvalue))
         this.SelectState = this.todos.filter(todo => { return todo.done })
         this.checkedAll = (this.SelectState.length === this.todos.length)
       },
@@ -151,7 +151,7 @@ export default {
   width: 0;
 }
 
-.topcontent {
+.topContent {
   position: relative;
   width: 100%;
   height: 25%;
@@ -161,43 +161,43 @@ export default {
   align-items: center;
 }
 
-.inputcontent {
+.inputContent {
   position: relative;
   top: 10%;
   width: 45%;
 }
 
-.inputcontent .el-input {
+.inputContent .el-input {
   transition: all 0.3s;
   margin-bottom: 10px;
 }
 
-.inputcontent .el-input:hover {
+.inputContent .el-input:hover {
   transform: scale(1.1);
 }
 
-.inputcontent .el-input ::placeholder {
+.inputContent .el-input ::placeholder {
   color: rgb(176, 173, 173);
 }
 
-.inputcontent .el-button {
+.inputContent .el-button {
   width: 25%;
   min-width: 170px;
   transition: all 0.6s ease-in-out;
 }
 
-.inputcontent .el-button:hover {
+.inputContent .el-button:hover {
   background: #1346ee;
 }
 
-.contentbox {
+.contentBox {
   display: flex;
   justify-content: center;
   width: 100%;
   height: 60%;
 }
 
-.todobox {
+.todoBox {
   position: relative;
   width: 45%;
   min-width: 425px;
@@ -205,17 +205,18 @@ export default {
   overflow: auto;
 }
 
-.todobox::-webkit-scrollbar{
+.todoBox::-webkit-scrollbar {
   width: 1px;
 }
-.textspace {
+
+.textSpace {
   width: 330px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.checkbox {
+.checkStyle {
   margin: 0 10px;
 }
 

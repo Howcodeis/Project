@@ -1,7 +1,7 @@
-import Axiosinterceptor from "./Axiosinterceptor";
+import AxiosInterceptor from "./AxiosInterceptor";
 
 export function getSentence () {
-  return Axiosinterceptor({
+  return AxiosInterceptor({
     method: 'get',
     url: 'https://v1.hitokoto.cn/'
   })
