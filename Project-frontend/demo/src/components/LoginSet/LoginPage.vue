@@ -33,9 +33,9 @@
 </template>
 
 <script>
+import { loginBack } from '@/utils/LoginAndRegisterBack'
 import { Message } from 'element-ui'
 import { setUserData, setItem } from '@/utils/setUserInfo'
-import { loginBack } from '@/utils/LoginAndRegisterBack'
 export default {
   name: "MyLogin",
   inject: ['reload'],
@@ -48,10 +48,10 @@ export default {
   },
   methods: {
     toggle () {
-      this.$bus.$emit('toggleback', false)
+      this.$store.state.isToggle = false
     },
     login () {
-      loginBack(this.username, this.password).then(result => {
+      loginBack(this.username, this.password).then((result) => {
         const { msg, code } = result.data
         if (code == 200) {
           Message.success({
@@ -71,14 +71,13 @@ export default {
             duration: 2000
           })
         }
-      })
-        .catch(error => {
-          Message.error({
-            message: '服务器断开',
-            duration: 2000
-          })
-          this.NProgress.done()
+      }).catch((err) => {
+        Message.error({
+          message: '服务器断开',
+          duration: 2000
         })
+        this.NProgress.done()
+      });
     }
   },
 }
@@ -97,6 +96,7 @@ h2 {
   height: 50px;
   margin: 30px 0 20px 0;
   border-bottom: 3px gray solid;
+  user-select: none;
 }
 
 .loginbtn {

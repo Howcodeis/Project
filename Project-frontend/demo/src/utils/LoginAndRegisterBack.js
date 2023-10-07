@@ -1,6 +1,7 @@
 import AxiosInterceptor from './AxiosInterceptor'
 
-export function loginBack (username, password) {
+
+export async function loginBack (username, password) {
   return AxiosInterceptor({
     method: 'get',
     url: '/login',

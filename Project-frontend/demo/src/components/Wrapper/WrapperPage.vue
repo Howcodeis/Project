@@ -1,13 +1,14 @@
 <template>
   <div class="wrapper">
-    <!-- 登陆页面 -->
+    <!-- 登陆注册页面 -->
     <div class="form-box">
+      <!-- 取消按钮 -->
       <span class="cancel" @click="cancel">
         <i class="el-icon-d-arrow-left" />
       </span>
       <transition name="toggle" mode="out-in">
-        <LoginPage v-if="isToggle"></LoginPage>
-        <RegisterPage v-else></RegisterPage>
+        <LoginPage v-if="$store.state.isToggle" />
+        <RegisterPage v-else />
       </transition>
     </div>
   </div>
@@ -21,7 +22,6 @@ export default {
   inject: ['reload'],
   data () {
     return {
-      isToggle: true
     };
   },
   components: { LoginPage, RegisterPage },
@@ -29,12 +29,6 @@ export default {
     cancel () {
       this.$store.state.isWrapper = false
     },
-    changetoggle (data) {
-      this.isToggle = data
-    }
-  },
-  mounted () {
-    this.$bus.$on('toggleback', this.changetoggle)
   },
 }
 </script>
@@ -52,7 +46,7 @@ export default {
   z-index: 3;
   background-color: transparent;
   background-size: cover;
-  backdrop-filter: blur(5px);
+  /* backdrop-filter: blur(5px); */
   display: flex;
   justify-content: center;
   align-items: center;

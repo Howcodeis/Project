@@ -9,17 +9,16 @@
       </div>
     </div>
     <div class="contentBox">
+      <div class="editarea">
+        <!-- @change checkBox 属性变化时函数执行 -->
+        <!-- 全选按钮 -->
+        <el-checkbox class="selAll" type="checkbox" v-model="checkedAll" @change="togglechecked" v-show="todos.length" />
+        <!-- 全删按钮 -->
+        <el-button class="el-icon-delete delAll" size="small" v-show="todos.length" @click="removeAll" />
+      </div>
       <div class="todoBox">
         <ul>
-          <li style="list-style: none; display: flex; justify-content: space-between;" v-show="todos.length">
-            <!-- @change checkBox 属性变化时函数执行 -->
-            <!-- 全选按钮 -->
-            <el-checkbox type="checkbox" v-model="checkedAll" @change="togglechecked" style="margin-bottom: 10px;" />
-            <!-- 全删按钮 -->
-            <el-button class="el-icon-delete" size="small" v-show="todos.length" @click="removeAll"
-              style="background: transparent; border:none; color:aliceblue"></el-button>
-          </li>
-          <transition-group name="animateforli" appear tag="ul">
+          <transition-group name="animateforli" appear tag="li">
             <!-- 遍历数组 -->
             <li class="list" v-for="todo in todos" :key="todo.id" :title="todo.text" :class="{ finish: todo.done }">
               <el-checkbox class="checkStyle" type="checkbox" v-model="todo.done" title="done?" />
@@ -44,7 +43,7 @@ export default {
   data () {
     return {
       id: '',
-      text: '',
+      text: this.$store.state.sentence,
       checkedAll: false,
       SelectState: [],
       todos: [],
@@ -191,22 +190,51 @@ export default {
 }
 
 .contentBox {
+  position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
   height: 60%;
 }
 
+.editarea {
+  position: absolute;
+  width: 48%;
+  min-width: 425px;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selAll {
+  font-size: 1.1em;
+  width: 49px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delAll {
+  font-size: 1.2em;
+  color: aliceblue;
+  border: none;
+  background: transparent;
+}
+
 .todoBox {
   position: relative;
+  top: 30px;
   width: 45%;
   min-width: 425px;
   text-align: left;
   overflow: auto;
+  padding-right: 6px;
 }
 
 .todoBox::-webkit-scrollbar {
-  width: 1px;
+  width: 2px;
 }
 
 .textSpace {
@@ -259,12 +287,13 @@ export default {
 
 .animateforli-enter,
 .animateforli.leave-to {
-  transform: translateX(300px);
+  opacity: 0;
+  transform: scale(0);
 }
 
 .animateforli-enter-active,
 .animateforli.leave-active {
-  transition: all 0.3s ease;
+  transition: all 1s ease-in-out;
 }
 
 .finish {

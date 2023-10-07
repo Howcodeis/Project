@@ -2,11 +2,6 @@
   <div class="bigBox">
     <!-- 顶部栏 -->
     <div class="topContent">
-      <div class="famousSentence">
-        <div class="sentence">
-          <p>{{ $store.state.sentence }}</p>
-        </div>
-      </div>
       <div class="topNav">
         <router-link class="mainNav" :to="{ name: 'todolist' }">
           <i class="el-icon-tickets">备忘录</i>
@@ -146,15 +141,6 @@ export default {
   z-index: 2;
   left: 15%;
   display: flex;
-}
-
-.famousSentence {
-  position: absolute;
-  width: 60%;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .topNav {

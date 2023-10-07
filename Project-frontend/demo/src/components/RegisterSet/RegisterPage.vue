@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     toggle () {
-      this.$bus.$emit('toggleback', true)
+      this.$store.state.isToggle = true
     },
     register () {
       registerBack(this.username, this.password).then((result) => {
@@ -48,6 +48,9 @@ export default {
             message: msg,
             duration: 2000
           })
+          setTimeout(() => {
+            this.$store.state.isToggle = true
+          }, 1000)
         } else {
           Message.error({
             message: msg,
@@ -78,6 +81,7 @@ h2 {
   height: 50px;
   margin: 30px 0 20px 0;
   border-bottom: 3px gray solid;
+  user-select: none;
 }
 
 .loginbtn {
