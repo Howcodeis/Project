@@ -23,8 +23,8 @@
             <!-- 遍历数组 -->
             <li class="list" v-for="todo in todos" :key="todo.id" :title="todo.text" :class="{ finish: todo.done }">
               <el-checkbox class="checkStyle" type="checkbox" v-model="todo.done" title="done?" />
-              <el-button plain class="del el-icon-delete" @click.stop="deltodo(todo)" round size="small"
-                title="删除"></el-button>
+              <!-- <el-button plain class="del el-icon-delete" @click.stop="deltodo(todo)" round size="small"
+                title="删除"></el-button> -->
               <div class="textSpace" :class="{ active: todo.done }">
                 <slot name="todos" :todo="todo">{{ todo.text }}</slot>
               </div>
@@ -68,27 +68,27 @@ export default {
         Message.success('添加成功')
       }
     },
-    deltodo (todo) {
-      //弹框确认
-      this.$confirm('确定要删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // filter 数组过滤
-        this.todos = this.todos.filter(t => t != todo)
-        this.$notify({
-          type: 'success', message: '删除成功', duration: 1000, showClose: false,
-          offset: 80
-        })
-      }).catch(() => {
-        this.$notify({
-          type: 'error', message: '已取消删除', duration: 1000, showClose: false,
-          offset: 80
-        })
-      })
+    // deltodo (todo) {
+    //   //弹框确认
+    //   this.$confirm('确定要删除吗？', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     // filter 数组过滤
+    //     this.todos = this.todos.filter(t => t != todo)
+    //     this.$notify({
+    //       type: 'success', message: '删除成功', duration: 1000, showClose: false,
+    //       offset: 80
+    //     })
+    //   }).catch(() => {
+    //     this.$notify({
+    //       type: 'error', message: '已取消删除', duration: 1000, showClose: false,
+    //       offset: 80
+    //     })
+    //   })
 
-    },
+    // },
     // 全选反选
     togglechecked () {
       this.todos.forEach(todo => {
@@ -210,7 +210,7 @@ export default {
 }
 
 .textSpace {
-  width: 330px;
+  width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -241,13 +241,13 @@ export default {
   background-color: #1f74be;
 }
 
-.list:hover .del {
+/* .list:hover .del {
   background: transparent;
   transform: scale(1);
   color: black;
-}
+} */
 
-.del {
+/* .del {
   position: absolute;
   right: 2%;
   cursor: pointer;
@@ -255,7 +255,7 @@ export default {
   border: none;
   transform: scale(0);
   transition: all 0.3s;
-}
+} */
 
 .animateforli-enter,
 .animateforli.leave-to {

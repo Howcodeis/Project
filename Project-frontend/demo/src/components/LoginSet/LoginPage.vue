@@ -51,19 +51,21 @@ export default {
       this.$bus.$emit('toggleback', false)
     },
     login () {
-      loginBack(this.username, this.password).then(async result => {
+      loginBack(this.username, this.password).then(result => {
         const { msg, code } = result.data
-        const { token, user } = result.data.data
         if (code == 200) {
           Message.success({
             message: msg,
             duration: 2000
           })
+          const { token, user } = result.data.data
           const { userId, username, permissionsId } = user
           setItem(JSON.stringify(setUserData(userId, username, permissionsId, token)))
           this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo-save'))
+          this.$store.state.isWrapper = false
           this.reload()
-        } else {
+        }
+        else {
           Message.warning({
             message: msg,
             duration: 2000
@@ -75,6 +77,7 @@ export default {
             message: '服务器断开',
             duration: 2000
           })
+          this.NProgress.done()
         })
     }
   },

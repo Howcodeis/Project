@@ -19,7 +19,7 @@
     <button class="loginbtn" @click="register" v-PreventReClick>注册</button>
     <div class="tologin">
       <span>已有账号？点击这里
-        <a @click="toggle">立即登录</a>
+        <a @click="toggle">去登录</a>
       </span>
     </div>
   </form>

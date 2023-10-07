@@ -7,8 +7,10 @@ import router from './utils/RouterRules'
 import store from './store'
 import Axiosinterceptor from './utils/AxiosInterceptor'
 import PreventReClick from './utils/PreventReClick' // 导入防止重复点击
+import NProgress from 'nprogress' // Progress 进度条
+import 'nprogress/nprogress.css' // Progress 进度条样式
 
-
+Vue.prototype.NProgress = NProgress
 Vue.prototype.$http = Axiosinterceptor
 Vue.use(ElementUI)
 Vue.use(VueRouter)
