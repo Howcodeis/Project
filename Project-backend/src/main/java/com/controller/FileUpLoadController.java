@@ -26,7 +26,7 @@ public class FileUpLoadController {
         if(!dir.exists()){
             dir.mkdir();
         }
-//        File file = new File(pathname:path + photo.getOriginalFilename());
+//        File = new File(pathname:path + photo.getOriginalFilename());
 //        photo.transferTo(file);
     }
 }

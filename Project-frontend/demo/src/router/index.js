@@ -5,26 +5,26 @@ const routes = [
     redirect: '/todolist',
     component: () => import('@/components/HomeSet/HomePage.vue'),
     children: [
-      {
-        path: "mask",
-        name: "mask",
-        component: () => import('@/views/MaskSet/MaskPage.vue'),
-        children: [
+      // {
+      //   path: "mask",
+      //   name: "mask",
+      //   component: () => import('@/views/MaskSet/MaskPage.vue'),
+      //   children: [
 
-          {
-            path: "login",
-            name: "login",
-            component: () => import('@/views/LoginSet/LoginPage.vue'),
-            meta: { title: '登录' }
-          },
-          {
-            path: "register",
-            name: "register",
-            component: () => import('@/views/RegisterSet/RegisterPage.vue'),
-            meta: { title: '注册' }
-          },
-        ]
-      },
+      //     {
+      //       path: "login",
+      //       name: "login",
+      //       component: () => import('@/views/LoginSet/LoginPage.vue'),
+      //       meta: { title: '登录' }
+      //     },
+      //     {
+      //       path: "register",
+      //       name: "register",
+      //       component: () => import('@/views/RegisterSet/RegisterPage.vue'),
+      //       meta: { title: '注册' }
+      //     },
+      //   ]
+      // },
       {
         path: "userlist",
         name: "userlist",

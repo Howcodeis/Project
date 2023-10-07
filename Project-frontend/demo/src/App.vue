@@ -60,6 +60,17 @@ export default {
   text-decoration: none;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
 ::-webkit-scrollbar {
   width: 1px;
 }

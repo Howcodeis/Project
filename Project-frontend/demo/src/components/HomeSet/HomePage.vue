@@ -66,11 +66,14 @@
         <router-view></router-view>
       </transition>
     </div>
-    <div class="test"></div>
+    <transition name="login">
+      <WrapperPage v-show="$store.state.isWrapper"></WrapperPage>
+    </transition>
   </div>
 </template>
 
 <script>
+import WrapperPage from '../Wrapper/WrapperPage.vue'
 export default {
   name: 'MyHome',
   // provide & inject
@@ -79,19 +82,16 @@ export default {
     return {
       isLogin: true,
       userinfo: '',
-    }
+    };
   },
+  components: { WrapperPage },
   methods: {
     toggleL_R () {
-      this.$router.push('mask').catch(err => {
-        console.log(err);
-      })
-    }
-    ,
-    toUserList () {
-      this.$router.push('userlist')
+      this.$store.state.isWrapper = true
     },
-
+    toUserList () {
+      this.$router.push('userlist');
+    },
     logout () {
       //弹框确认
       this.$confirm('确定要登出吗？', '提示', {
@@ -99,28 +99,28 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        localStorage.removeItem('userinfo-save')
+        localStorage.removeItem('userinfo-save');
         this.$message({
           message: '登出成功',
           type: 'success',
           duration: 1000
-        })
-        this.reload()
+        });
+        this.reload();
       }).catch(() => {
         this.$message({
           message: '取消登出',
           type: 'info',
           duration: 1000
-        })
+        });
       });
     },
   },
   mounted () {
     // 读取userinfo
     if (!this.userinfo) {
-      this.userinfo = JSON.parse(localStorage.getItem('userinfo-save')) || ''
+      this.userinfo = JSON.parse(localStorage.getItem('userinfo-save')) || '';
       if (this.userinfo.token) {
-        this.isLogin = false
+        this.isLogin = false;
       }
     }
   },
@@ -129,7 +129,7 @@ export default {
 
 <style scoped>
 .bigBox {
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -139,10 +139,11 @@ export default {
 }
 
 .topContent {
-  position: relative;
+  position: fixed;
   width: 85%;
   height: 10%;
   top: 0;
+  z-index: 2;
   left: 15%;
   display: flex;
 }
@@ -179,31 +180,34 @@ export default {
   align-items: center;
 }
 
-.topNav .mainNav:hover::after {
+.topNav .mainNav::after {
   content: "";
   position: absolute;
-  display: inline-block;
   width: 60px;
-  height: 2px;
+  height: 3px;
   bottom: 0;
+  border-radius: 5px;
   background: #6bc6dd;
+  transition: transform .5s;
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.topNav .mainNav:hover::after {
+  transform-origin: left;
+  transform: scaleX(1);
 }
 
 .topNav .mainNav.router-link-active::after {
-  content: "";
-  position: absolute;
-  display: inline-block;
-  width: 60px;
-  height: 2px;
-  bottom: 0;
+  transform: scaleX(1);
   background: #1279d8;
 }
 
 .sideNav {
-  width: 70px;
+  position: fixed;
+  top: 10%;
+  width: 60px;
   height: 90%;
-  z-index: 1;
-  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -241,21 +245,39 @@ export default {
   transition: all .3s;
 }
 
-.action .nav_item.router-link-active::before,
-.others .nav_item.router-link-active::before {
-  content: '';
-  display: inline-block;
-  position: absolute;
-  height: 86%;
-  width: 2px;
-  right: 0;
-  top: 5px;
-  background: #5d83dc;
-}
-
 .nav_item:hover {
   background: #5d83dc;
   color: #ffff;
+}
+
+.nav_item::before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 3px;
+  height: 86%;
+  right: -5px;
+  top: 5px;
+  transform: scaleY(0);
+  border-radius: 5px;
+  background: #5d83dc;
+  transform-origin: bottom;
+  transition: transform .4s;
+}
+
+.nav_item:hover::before {
+  transform-origin: top;
+  transform: scaleY(1);
+}
+
+.action .nav_item.router-link-active::before,
+.others .nav_item.router-link-active::before {
+  transform: scale(1);
+  background: #5d83dc;
+}
+
+.nav_item:hover i {
+  transform: scale(1.1);
 }
 
 .nav_item i {
@@ -277,16 +299,17 @@ export default {
 .others .nav_item:nth-child(1)::after,
 .others .nav_item:nth-child(6)::after {
   content: '';
-  display: block;
   position: absolute;
+  display: block;
   background-color: #565765;
   width: 100%;
-  height: 2px;
+  height: 3px;
   bottom: -6px;
 }
 
 .rightContent {
   position: relative;
+  top: 10%;
   left: 15%;
   width: 80%;
   height: 90%;
@@ -319,5 +342,20 @@ export default {
 
 .fade-leave-to {
   opacity: 0;
+}
+
+.login-enter-active,
+.login-leave-active {
+  transition: all .4s;
+}
+
+.login-enter-to,
+.login-leave {
+  transform: scale(1);
+}
+
+.login-enter,
+.login-leave-to {
+  transform: scale(0);
 }
 </style>

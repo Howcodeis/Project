@@ -14,7 +14,8 @@ const state = {
   userinfo: '',
   text: '',
   sentence: '',
-  isPermission: 1
+  isPermission: 1,
+  isWrapper: ''
 }
 
 //创建并暴露store

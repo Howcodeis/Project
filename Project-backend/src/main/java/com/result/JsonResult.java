@@ -40,7 +40,11 @@ public class JsonResult {
     public void setMsg(String msg) {
         this.msg = msg;
     }
-
+    public void setJsonResult(boolean success, int code, String msg) {
+        this.success = success;
+        this.code = code;
+        this.msg = msg;
+    }
     //构造方法私有化
     private JsonResult() {
     }
@@ -48,9 +52,10 @@ public class JsonResult {
     //成功静态方法
     public static JsonResult success() {
         JsonResult jsonResult = new JsonResult();
-        jsonResult.setSuccess(true);
-        jsonResult.setCode(20000);
-        jsonResult.setMsg("登录成功");
+        jsonResult.setJsonResult(true, 200, "登录成功");
+//        jsonResult.setSuccess(true);
+//        jsonResult.setCode(20000);
+//        jsonResult.setMsg("登录成功");
         return jsonResult;
     }
 
@@ -64,9 +69,10 @@ public class JsonResult {
     //    失败的静态方法
     public static JsonResult fail() {
         JsonResult jsonResult = new JsonResult();
-        jsonResult.setSuccess(false);
-        jsonResult.setCode(20001);
-        jsonResult.setMsg("登录失败");
+        jsonResult.setJsonResult(false,401,"登录失败");
+//        jsonResult.setSuccess(false);
+//        jsonResult.setCode(20001);
+//        jsonResult.setMsg("登录失败");
         return jsonResult;
     }
 
@@ -81,6 +87,7 @@ public class JsonResult {
         this.data.put(key, value);
         return this;
     }
+
     public JsonResult data(String key, Object value, String key2, Object value2) {
         this.data.put(key, value);
         this.data.put(key2, value2);

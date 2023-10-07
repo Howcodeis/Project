@@ -14,7 +14,7 @@ const router = new VueRouter({
   // },
   routes
 })
-const whiteList = ['mask', 'login', 'register', 'home', 'todolist', 'musiclist']
+const whiteList = ['home', 'todolist', 'musiclist']
 // 拦截
 router.beforeEach((to, from, next) => {
   const { permissionsId, token } = JSON.parse(localStorage.getItem('userinfo-save')) || ''
@@ -45,7 +45,7 @@ router.beforeEach((to, from, next) => {
         showClose: false,
         duration: 1500
       })
-      next(`mask/login?redirect=${to.path}`)
+      next(`/todolist?redirect=${to.path}`)
       NProgress.done()
     }
   }

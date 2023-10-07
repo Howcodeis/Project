@@ -164,7 +164,7 @@ export default {
 .inputContent {
   position: relative;
   top: 10%;
-  width: 45%;
+  width: 40%;
 }
 
 .inputContent .el-input {
@@ -226,7 +226,7 @@ export default {
   align-items: center;
   list-style: none;
   line-height: 40px;
-  width: 95%;
+  width: 100%;
   overflow: hidden;
   margin-bottom: 20px;
   border: none;
