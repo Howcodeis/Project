@@ -8,10 +8,11 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src'),
+      'image': 'src/assets/image'
     }
   },
   server: {
-    port: 1145
+    port: 8848
   }
 })

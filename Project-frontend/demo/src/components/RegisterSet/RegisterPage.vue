@@ -16,10 +16,10 @@
       <input type="password" v-model="password" required />
       <label>请输入密码</label>
     </div>
-    <button class="loginbtn" @click="register" v-PreventReClick>注册</button>
-    <div class="tologin">
+    <button class="submitbtn" @click="register" v-PreventReClick>注册</button>
+    <div class="toggle">
       <span>已有账号？点击这里
-        <a @click="toggle">去登录</a>
+        <a @click="dataFn(true)">去登录</a>
       </span>
     </div>
   </form>
@@ -27,9 +27,10 @@
 
 <script>
 import { Message } from 'element-ui';
-import { registerBack } from '@/utils/LoginAndRegisterBack';
+import { registerBack } from '@/utils/AxiosBack';
 export default {
   name: "MyRegister",
+  props: { dataFn: Function },
   data () {
     return {
       username: '',
@@ -37,9 +38,6 @@ export default {
     }
   },
   methods: {
-    toggle () {
-      this.$store.state.isToggle = true
-    },
     register () {
       registerBack(this.username, this.password).then((result) => {
         const { msg, code } = result.data
@@ -49,6 +47,7 @@ export default {
             duration: 2000
           })
           setTimeout(() => {
+            // 方法暂未更新  !!!!
             this.$store.state.isToggle = true
           }, 1000)
         } else {
@@ -62,6 +61,7 @@ export default {
           message: '服务器断开',
           duration: 2000
         })
+        this.NProgress.done()
       })
     },
   }
@@ -69,81 +69,5 @@ export default {
 </script>
 
 <style scoped>
-h2 {
-  font-size: 2em;
-  text-align: center;
-  color: #37709c;
-}
-
-.input-box {
-  position: relative;
-  width: 100%;
-  height: 50px;
-  margin: 30px 0 20px 0;
-  border-bottom: 3px gray solid;
-  user-select: none;
-}
-
-.loginbtn {
-  width: 100%;
-  height: 40px;
-  background: #37709c;
-  border: none;
-  outline: none;
-  border-radius: 6px;
-  font-size: 1em;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.input-box input {
-  position: relative;
-  padding: 0 35px 0 5px;
-  bottom: -10px;
-  width: 90%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  font-weight: 600;
-}
-
-.input-box label {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  font-weight: 500;
-  font-size: 1em;
-  pointer-events: none;
-  transform: translateY(-50%);
-  transition: .5s;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label {
-  top: -3px;
-}
-
-.input-box .icon {
-  position: absolute;
-  right: 2px;
-  font-size: 1.2em;
-  line-height: 60px
-}
-
-.tologin {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  top: 20px;
-
-}
-
-.tologin a {
-  cursor: pointer;
-  color: #37709c;
-  font-size: 1.1em;
-  font-weight: 600;
-}
+@import "@/assets/css/login-register.css";
 </style>

@@ -19,10 +19,6 @@ public class UserServiceIMPL implements UserService {
     public User login(String username, String password) throws NormalException {
 //        查询用户
         User user = userMapper.select(username);
-//        判断输入是否为空
-//        if (username == null || password == null) {
-//            throw new NormalException("账密不能为空");
-//        }
         if (Objects.requireNonNull(username).trim().isEmpty()
                 || Objects.requireNonNull(password).trim().isEmpty()) {
             throw new NormalException("账密不能为空");
@@ -38,20 +34,16 @@ public class UserServiceIMPL implements UserService {
     }
 
     @Override
-    public void register(String username, String password) throws NormalException {
+    public void register(String username, String password, String date) throws NormalException {
 //        查询用户
         User user = userMapper.select(username);
-//        判断输入是否为空
-//        if (username == null || password == null) {
-//            throw new NormalException("账密不能为空");
-//        }
         if (Objects.requireNonNull(username).trim().isEmpty()
                 || Objects.requireNonNull(password).trim().isEmpty()) {
             throw new NormalException("账密不能为空");
         }
 //        检查是否存在用户
         else if (user == null) {
-            userMapper.save(username, password);
+            userMapper.save(username, password, date);
         } else {
             throw new NormalException("账号已存在");
         }

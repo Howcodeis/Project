@@ -3,7 +3,7 @@
     <div class="musicplay">
       <ul>
         <li>
-          <el-button id="music" round size="medium" @click="controlMusic">{{ $store.state.text || '点击播放' }}</el-button>
+          <el-button id="music" round size="medium" @click="controlMusic">{{ text || '点击播放' }}</el-button>
         </li>
       </ul>
     </div>
@@ -26,13 +26,6 @@ export default {
       this.$bus.$emit('toplay', this.isPlay)
     }
   },
-  watch: {
-    text: {
-      handler (newvalue) {
-        this.$store.state.text = newvalue
-      }
-    }
-  }
 }
 </script>
 

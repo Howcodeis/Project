@@ -4,24 +4,48 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 //应用Vuex插件
 Vue.use(Vuex)
-//准备actions对象——响应组件中用户的动作
-const actions = {}
-//准备mutations对象——修改state中的数据
-const mutations = {
-}
-//准备state对象——保存具体的数据
-const state = {
-  userinfo: '',
-  text: '',
-  sentence: '',
-  isPermission: 1,
-  isWrapper: '',
-  isToggle: true,
-}
 
-//创建并暴露store
-export default new Vuex.Store({
-  actions,
-  mutations,
-  state
+const store = new Vuex.Store({
+  modules: {
+    // 模块化
+    somethingAbout: {
+      // 开启命名空间
+      namespaced: true,
+      state: {
+        data: ''
+      },
+      actions: {
+        setdata (context, value) {
+          // 对userinfo进行操作
+          // 传递给mutations处理
+          context.commit('savesomething', value)
+        }
+      },
+      mutations: {
+        savesomething (state, value) {
+          // mutations 处理完给state保管
+          state.data = value
+        }
+      },
+      getters: {
+        // 返回处理过后的数据
+      }
+    },
+    // 名句管理
+    SentenceAbout: {
+      namespaced: true,
+      state: {
+        sentence: '',
+      },
+      mutations: {
+        setSentence (state, value) {
+          state.sentence = value
+        }
+      },
+    }
+  }
 })
+
+
+// 暴露store
+export default store

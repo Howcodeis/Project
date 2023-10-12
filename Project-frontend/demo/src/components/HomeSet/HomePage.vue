@@ -21,11 +21,11 @@
       <!-- 头像部分 -->
       <div class="others">
         <!-- 登陆前 -->
-        <a class="nav_item" @click="toggleL_R" v-if="isLogin"><i class="el-icon-user" /><span>去登陆</span></a>
+        <a class="nav_item" @click="toggleL_R" v-if="!isLogin"><i class="el-icon-user" /><span>去登陆</span></a>
         <!-- 登陆后 -->
-        <a class="nav_item" v-if="!isLogin"><i class="el-icon-service" /><span>{{ userinfo.username
+        <a class="nav_item" v-if="isLogin"><i class="el-icon-service" /><span>{{ userinfo.username
         }}</span></a>
-        <router-link class="nav_item" :to="{ name: 'musiclist' }">
+        <router-link class="nav_item" :to="{ name: 'main' }">
           <i class="el-icon-s-home" />
           <span>主页</span>
         </router-link>
@@ -46,7 +46,7 @@
           <span>趣闻</span>
         </router-link>
       </div>
-      <div class="action" v-show="!isLogin">
+      <div class="action" v-show="isLogin">
         <router-link class="nav_item" :to="{ name: 'userinfo' }">
           <i class="el-icon-setting" />
           <span>设置</span>
@@ -58,11 +58,13 @@
     </div>
     <div class="rightContent">
       <transition name="fade" mode="out-in">
-        <router-view></router-view>
+        <keep-alive>
+          <router-view v-if="isChildrenRouterAlive"></router-view>
+        </keep-alive>
       </transition>
     </div>
     <transition name="login">
-      <WrapperPage v-show="$store.state.isWrapper"></WrapperPage>
+      <WrapperPage v-show="isWrapper" :showWrapper="showWrapper"></WrapperPage>
     </transition>
   </div>
 </template>
@@ -73,16 +75,22 @@ export default {
   name: 'MyHome',
   // provide & inject
   inject: ['reload'],
+  provide () {
+    return {
+      childrenRouterRefresh: this.childrenRouterRefresh
+    }
+  },
   data () {
     return {
-      isLogin: true,
-      userinfo: '',
+      isLogin: false,
+      isWrapper: '',
+      isChildrenRouterAlive: true
     };
   },
   components: { WrapperPage },
   methods: {
     toggleL_R () {
-      this.$store.state.isWrapper = true
+      this.isWrapper = true
     },
     toUserList () {
       this.$router.push('userlist');
@@ -109,13 +117,20 @@ export default {
         });
       });
     },
+    showWrapper (data) {
+      this.isWrapper = data
+    },
+    childrenRouterRefresh () {
+      this.isChildrenRouterAlive = false
+      this.$nextTick(() => { this.isChildrenRouterAlive = true })
+    }
   },
   mounted () {
     // 读取userinfo
     if (!this.userinfo) {
       this.userinfo = JSON.parse(localStorage.getItem('userinfo-save')) || '';
       if (this.userinfo.token) {
-        this.isLogin = false;
+        this.isLogin = true;
       }
     }
   },
@@ -128,18 +143,16 @@ export default {
   width: 100%;
   height: 100%;
   background-size: cover;
-  min-width: 600px;
-  min-height: 720px;
-  background-color: #303049;
+  background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
 }
 
 .topContent {
-  position: fixed;
-  width: 85%;
+  position: absolute;
+  width: 100%;
   height: 10%;
+  min-height: 64px;
   top: 0;
   z-index: 2;
-  left: 15%;
   display: flex;
 }
 
@@ -158,12 +171,16 @@ export default {
   border: none;
   border-radius: 5px;
   margin: 2px;
-  color: rgb(150, 169, 168);
+  color: #736e79;
   min-width: 60px;
   transition: all 0.3s;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.mainNav:hover {
+  box-shadow: 0 0 3px 5px #7db9f5;
 }
 
 .topNav .mainNav::after {
@@ -173,10 +190,10 @@ export default {
   height: 3px;
   bottom: 0;
   border-radius: 5px;
-  background: #6bc6dd;
   transition: transform .5s;
   transform: scaleX(0);
   transform-origin: right;
+  background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
 }
 
 .topNav .mainNav:hover::after {
@@ -186,37 +203,51 @@ export default {
 
 .topNav .mainNav.router-link-active::after {
   transform: scaleX(1);
-  background: #1279d8;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
 }
 
 .sideNav {
-  position: fixed;
+  position: absolute;
   top: 10%;
   width: 60px;
+  min-width: 40px;
   height: 90%;
   display: flex;
+  z-index: 2;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   border-radius: 6px;
+  box-shadow: 0 0 30px 5px #8ec5fc;
   text-overflow: ellipsis;
   transition: all .3s;
-  background: transparent;
+  background: linear-gradient(120deg, #8ec5fc 0%, #e0c3fc 100%);
 }
 
 .sideNav:hover {
-  background: #35374d;
-  width: 160px;
+  width: 130px;
+  box-shadow: 0 0 50px 4px #4facfe;
 }
 
 .sideNav:hover span {
   opacity: 1;
 }
 
+.sideNav span {
+  position: relative;
+  opacity: 0;
+  top: 22px;
+  left: 50px;
+  font: 400 18px '';
+  transition: all .3s;
+  pointer-events: none;
+  color: #736e79;
+}
+
 .others,
 .action {
   position: relative;
-  width: 100%;
+  width: inherit;
 
 }
 
@@ -227,18 +258,17 @@ export default {
   height: 70px;
   margin: 9px;
   border-radius: 6px;
-  color: rgb(150, 169, 168);
+  color: #3b869b;
   transition: all .3s;
 }
 
 .nav_item:hover {
-  background: #5d83dc;
-  color: #ffff;
+  box-shadow: 0 0 3px 3px #7db9f5;
 }
 
 .nav_item::before {
   content: '';
-  display: block;
+  display: inline-block;
   position: absolute;
   width: 3px;
   height: 86%;
@@ -246,7 +276,7 @@ export default {
   top: 5px;
   transform: scaleY(0);
   border-radius: 5px;
-  background: #5d83dc;
+  background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
   transform-origin: bottom;
   transition: transform .4s;
 }
@@ -259,27 +289,23 @@ export default {
 .action .nav_item.router-link-active::before,
 .others .nav_item.router-link-active::before {
   transform: scale(1);
-  background: #5d83dc;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
 }
 
 .nav_item:hover i {
-  transform: scale(1.1);
+  transform: scale(1.1) rotateY(180deg);
+}
+
+.action .nav_item:hover i:nth-child(1) {
+  transform: rotate(180deg);
 }
 
 .nav_item i {
   font-size: 30px;
   position: absolute;
-  margin: 20px 0 0 12px;
+  margin: 20px 0 0 5px;
   transition: all .3s;
-}
-
-.nav_item span {
-  position: relative;
-  top: 22px;
-  left: 60px;
-  opacity: 0;
-  font: 400 18px '';
-  transition: all .3s;
+  color: #736e79;
 }
 
 .others .nav_item:nth-child(1)::after,
@@ -287,23 +313,22 @@ export default {
   content: '';
   position: absolute;
   display: block;
-  background-color: #565765;
-  width: 100%;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  width: 96%;
   height: 3px;
   bottom: -6px;
+  left: -5px;
 }
 
 .rightContent {
   position: relative;
   top: 10%;
   left: 15%;
-  width: 80%;
+  width: 84%;
   height: 90%;
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  text-align: center;
   overflow: auto;
+  transition: all .4s;
+
 }
 
 .rightContent::-webkit-scrollbar {
@@ -312,36 +337,22 @@ export default {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.4s ease-out;
+  transition: all 0.6s ease;
 }
 
-.fade-enter-to,
-.fade-leave {
-  visibility: visible;
-}
-
-.fade-enter {
-  visibility: hidden;
-  transform: scale(0);
-  opacity: 0;
-}
-
+.fade-enter,
 .fade-leave-to {
   opacity: 0;
 }
 
+
 .login-enter-active,
 .login-leave-active {
-  transition: all .4s;
-}
-
-.login-enter-to,
-.login-leave {
-  transform: scale(1);
+  transition: all .4s ease-in-out;
 }
 
 .login-enter,
 .login-leave-to {
-  transform: scale(0);
+  transform: scale(0) skew(60deg, 20deg);
 }
 </style>

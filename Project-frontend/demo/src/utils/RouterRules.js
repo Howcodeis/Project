@@ -1,6 +1,5 @@
 import routes from "../router";
 import VueRouter from "vue-router";
-import store from "../store";
 import { Message } from "element-ui";
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
@@ -14,24 +13,15 @@ const router = new VueRouter({
   // },
   routes
 })
-const whiteList = ['home', 'todolist', 'musiclist']
+const whiteList = ['home', 'todolist', 'musiclist', 'main']
 // 拦截
 router.beforeEach((to, from, next) => {
   const { permissionsId, token } = JSON.parse(localStorage.getItem('userinfo-save')) || ''
   NProgress.start()
   // hastoken
   if (token) {
-    if (to.meta.permissionsId
-      && permissionsId != 1
-    ) {
-      store.state.isPermission = 1
-      next()
-      NProgress.done()
-    } else {
-      store.state.isPermission = 0
-      next()
-      NProgress.done()
-    }
+    next()
+    NProgress.done()
   }
   // no token
   else {
@@ -45,7 +35,7 @@ router.beforeEach((to, from, next) => {
         showClose: false,
         duration: 1500
       })
-      next(`/todolist?redirect=${to.path}`)
+
       NProgress.done()
     }
   }

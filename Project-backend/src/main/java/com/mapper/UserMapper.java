@@ -1,10 +1,10 @@
 package com.mapper;
 
 import com.domain.User;
-import com.domain.User_Permissions;
-import org.apache.ibatis.annotations.*;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface UserMapper {
@@ -16,10 +16,10 @@ public interface UserMapper {
 
 
     //     注册
-    @Insert("insert into user (username, password, permissions_id) values (#{username}, #{password}, 3)")
-    void save(String username, String password);
+    @Insert("insert into user (username, password, permissions_id, date) values (#{username}, #{password}, 3, #{date})")
+    void save(String username, String password, String date);
 
     //    删除
     @Delete("delete from user where user_id = #{userId}")
-    int delete(Integer userId);
+    void delete(Integer userId);
 }

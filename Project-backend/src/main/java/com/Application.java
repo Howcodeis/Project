@@ -13,13 +13,5 @@ public class Application {
     public static void main(String[] args) {
         // 返回IOC容器
         SpringApplication.run(Application.class, args);
-        // 查看组件
-//        String[] names = run.getBeanDefinitionNames();
-//        for (String name: names) {
-//            System.out.println(name);
-//        }
-        // 从容器中获取组件
-//        User user01 = run.getBean("user01", User.class);
-//        System.out.println(user01);
     }
 }

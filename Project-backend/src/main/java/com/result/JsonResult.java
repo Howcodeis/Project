@@ -53,9 +53,6 @@ public class JsonResult {
     public static JsonResult success() {
         JsonResult jsonResult = new JsonResult();
         jsonResult.setJsonResult(true, 200, "登录成功");
-//        jsonResult.setSuccess(true);
-//        jsonResult.setCode(20000);
-//        jsonResult.setMsg("登录成功");
         return jsonResult;
     }
 
@@ -70,9 +67,6 @@ public class JsonResult {
     public static JsonResult fail() {
         JsonResult jsonResult = new JsonResult();
         jsonResult.setJsonResult(false,401,"登录失败");
-//        jsonResult.setSuccess(false);
-//        jsonResult.setCode(20001);
-//        jsonResult.setMsg("登录失败");
         return jsonResult;
     }
 

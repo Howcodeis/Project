@@ -3,12 +3,14 @@
     <!-- 登陆注册页面 -->
     <div class="form-box">
       <!-- 取消按钮 -->
-      <span class="cancel" @click="cancel">
+      <span class="cancel" @click="showWrapper(false)">
         <i class="el-icon-d-arrow-left" />
       </span>
       <transition name="toggle" mode="out-in">
-        <LoginPage v-if="$store.state.isToggle" />
-        <RegisterPage v-else />
+        <keep-alive>
+          <LoginPage v-if="isToggle" :dataFn="dataFn" />
+          <RegisterPage v-else :dataFn="dataFn" />
+        </keep-alive>
       </transition>
     </div>
   </div>
@@ -20,15 +22,17 @@ import RegisterPage from '../RegisterSet/RegisterPage.vue';
 export default {
   name: "MyWrapper",
   inject: ['reload'],
+  props: { showWrapper: Function },
   data () {
     return {
+      isToggle: true
     };
   },
   components: { LoginPage, RegisterPage },
   methods: {
-    cancel () {
-      this.$store.state.isWrapper = false
-    },
+    dataFn (data) {
+      this.isToggle = data
+    }
   },
 }
 </script>
@@ -46,7 +50,6 @@ export default {
   z-index: 3;
   background-color: transparent;
   background-size: cover;
-  /* backdrop-filter: blur(5px); */
   display: flex;
   justify-content: center;
   align-items: center;

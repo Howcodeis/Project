@@ -1,12 +1,32 @@
 package com.domain;
 
+import java.sql.Date;
+
 public class User_Permissions {
 
     private int userId;
+    private int permissionsId;
     private String username;
     private String permissionsName;
+    private Date date;
 
     public User_Permissions() {
+    }
+
+    public int getPermissionsId() {
+        return permissionsId;
+    }
+
+    public void setPermissionsId(int permissionsId) {
+        this.permissionsId = permissionsId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public int getUserId() {
@@ -39,6 +59,7 @@ public class User_Permissions {
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", permissionsName='" + permissionsName + '\'' +
+                ", date=" + date +
                 '}';
     }
 }

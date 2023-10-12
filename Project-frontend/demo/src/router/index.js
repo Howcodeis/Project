@@ -2,34 +2,22 @@ const routes = [
   {
     path: "/",
     name: "home",
-    redirect: '/todolist',
+    redirect: '/main',
     component: () => import('@/components/HomeSet/HomePage.vue'),
     children: [
-      // {
-      //   path: "mask",
-      //   name: "mask",
-      //   component: () => import('@/views/MaskSet/MaskPage.vue'),
-      //   children: [
-
-      //     {
-      //       path: "login",
-      //       name: "login",
-      //       component: () => import('@/views/LoginSet/LoginPage.vue'),
-      //       meta: { title: '登录' }
-      //     },
-      //     {
-      //       path: "register",
-      //       name: "register",
-      //       component: () => import('@/views/RegisterSet/RegisterPage.vue'),
-      //       meta: { title: '注册' }
-      //     },
-      //   ]
-      // },
+      {
+        path: 'main',
+        name: 'main',
+        meta: {
+          menu: '主页',
+        },
+        component: () => import('@/views/MainSet/MainPage.vue')
+      },
       {
         path: "userlist",
         name: "userlist",
         meta: {
-          title: '成员管理',
+          menu: '成员管理',
           permissionsId: 1,
         },
         component: () => import('@/views/UserListSet/UserList.vue')

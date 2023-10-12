@@ -23,22 +23,23 @@
         </a>
       </span>
     </div>
-    <button :disabled="!isAgree" class="loginbtn" @click="login" v-PreventReClick>登录</button>
-    <div class="toregister">
+    <button :disabled="!isAgree" class="submitbtn" @click="login" v-PreventReClick>登录</button>
+    <div class="toggle">
       <span>没有账号？点击这里
-        <a @click="toggle">立即注册</a>
+        <a @click="dataFn(false)">立即注册</a>
       </span>
     </div>
   </form>
 </template>
 
 <script>
-import { loginBack } from '@/utils/LoginAndRegisterBack'
+import { loginBack } from '@/utils/AxiosBack'
 import { Message } from 'element-ui'
 import { setUserData, setItem } from '@/utils/setUserInfo'
 export default {
   name: "MyLogin",
   inject: ['reload'],
+  props: { dataFn: Function },
   data () {
     return {
       username: '',
@@ -47,11 +48,9 @@ export default {
     }
   },
   methods: {
-    toggle () {
-      this.$store.state.isToggle = false
-    },
     login () {
       loginBack(this.username, this.password).then((result) => {
+        console.log(result);
         const { msg, code } = result.data
         if (code == 200) {
           Message.success({
@@ -61,8 +60,6 @@ export default {
           const { token, user } = result.data.data
           const { userId, username, permissionsId } = user
           setItem(JSON.stringify(setUserData(userId, username, permissionsId, token)))
-          this.$store.state.userinfo = JSON.stringify(localStorage.getItem('userinfo-save'))
-          this.$store.state.isWrapper = false
           this.reload()
         }
         else {
@@ -84,95 +81,5 @@ export default {
 </script>
 
 <style scoped>
-h2 {
-  font-size: 2em;
-  text-align: center;
-  color: #37709c;
-}
-
-.input-box {
-  position: relative;
-  width: 100%;
-  height: 50px;
-  margin: 30px 0 20px 0;
-  border-bottom: 3px gray solid;
-  user-select: none;
-}
-
-.loginbtn {
-  width: 100%;
-  height: 40px;
-  background: #37709c;
-  border: none;
-  outline: none;
-  border-radius: 6px;
-  font-size: 1em;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.input-box input {
-  position: relative;
-  padding: 0 35px 0 5px;
-  bottom: -10px;
-  width: 90%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  font-weight: 600;
-}
-
-.input-box label {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  font-weight: 500;
-  font-size: 1em;
-  pointer-events: none;
-  transform: translateY(-50%);
-  transition: .5s;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label {
-  top: -3px;
-}
-
-.input-box .icon {
-  position: absolute;
-  right: 2px;
-  font-size: 1.2em;
-  line-height: 60px
-}
-
-.treaty {
-  position: relative;
-  width: 100%;
-  height: 20px;
-  margin-bottom: 20px;
-}
-
-.treaty span {
-  position: relative;
-  left: 10px;
-  font-size: 0.8em;
-  font-weight: 600;
-}
-
-.toregister {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  top: 20px;
-
-}
-
-.toregister a {
-  cursor: pointer;
-  color: #37709c;
-  font-size: 1.1em;
-  font-weight: 600;
-}
+@import "@/assets/css/login-register.css";
 </style>

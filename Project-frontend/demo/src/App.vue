@@ -45,7 +45,7 @@ export default {
     this.$bus.$on('toplay', this.playMusic)
     getSentence().then((result) => {
       const { hitokoto } = result.data
-      this.$store.state.sentence = hitokoto
+      this.$store.commit('SentenceAbout/setSentence', hitokoto)
     }).catch((err) => {
       console.log(err);
     });
@@ -69,12 +69,13 @@ body {
 #app {
   width: 100%;
   height: 100%;
+  min-width: 720px;
+  min-height: 770px;
 }
 
 ::-webkit-scrollbar {
   width: 1px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #898989;
   border-radius: 8px;

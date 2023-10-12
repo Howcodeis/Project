@@ -23,7 +23,7 @@ AxiosInterceptor.interceptors.response.use(
     return Promise.resolve(response)
   },
   error => {
-    router.replace("/")
+    nProgress.done()
     return Promise.reject(error)
   }
 )

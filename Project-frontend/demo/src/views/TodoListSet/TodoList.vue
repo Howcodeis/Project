@@ -2,28 +2,35 @@
   <div class="box">
     <div class="topContent">
       <div class="inputContent">
-        <el-input type="text" v-model="text" clearable placeholder="写下你想做的亦或者是名句吧!加油陌生人!"
-          @keydown.native.enter="addtodo"></el-input>
-        <!-- 侧边栏提示 需要plain 属性 -->
-        <el-button plain type="success" @click="addtodo">添加到备忘录</el-button>
+        <div class="inputbox">
+          <el-input type="text" v-model="text" clearable :placeholder="$store.state.SentenceAbout.sentence"
+            @keydown.native.enter="addtodo">
+          </el-input>
+        </div>
+        <div class="addbutton">
+          <!-- 侧边栏提示 需要plain 属性 -->
+          <el-button plain type="success" @click="addtodo">添加到备忘录</el-button>
+        </div>
       </div>
     </div>
     <div class="contentBox">
       <div class="editarea">
         <!-- @change checkBox 属性变化时函数执行 -->
         <!-- 全选按钮 -->
-        <el-checkbox class="selAll" type="checkbox" v-model="checkedAll" @change="togglechecked" v-show="todos.length" />
+        <el-checkbox title="全部选中&全部取消" class="selAll" type="checkbox" v-model="checkedAll" @change="togglechecked"
+          v-show="todos.length" />
         <!-- 全删按钮 -->
-        <el-button class="el-icon-delete delAll" size="small" v-show="todos.length" @click="removeAll" />
+        <el-button title="删除所选" class="el-icon-delete delAll" size="small" v-show="todos.length" @click="removeAll" />
       </div>
       <div class="todoBox">
         <ul>
           <transition-group name="animateforli" appear tag="li">
             <!-- 遍历数组 -->
-            <li class="list" v-for="todo in todos" :key="todo.id" :title="todo.text" :class="{ finish: todo.done }">
-              <el-checkbox class="checkStyle" type="checkbox" v-model="todo.done" title="done?" />
-              <!-- <el-button plain class="del el-icon-delete" @click.stop="deltodo(todo)" round size="small"
-                title="删除"></el-button> -->
+            <li role="none" class="list" v-for="(   todo, index   ) of    todos   " :key="index" :title="todo.text"
+              :class="{ finish: todo.done }">
+              <div class="check_state">
+                <el-checkbox type="checkbox" v-model="todo.done" title="done?" />
+              </div>
               <div class="textSpace" :class="{ active: todo.done }">
                 <slot name="todos" :todo="todo">{{ todo.text }}</slot>
               </div>
@@ -36,58 +43,46 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import { Notification } from 'element-ui'
 
 export default {
   name: 'MyTodos',
   data () {
     return {
       id: '',
-      text: this.$store.state.sentence,
+      text: '',
       checkedAll: false,
-      SelectState: [],
+      selectState: [],
       todos: [],
-      doneTodos: []
+      doneTodos: [],
+      sentence: ''
     }
   },
   methods: {
     addtodo () {
       if (this.text.length < 2) {
         // 侧栏提示
-        this.$notify({
-          message: "做事绝不能敷衍",
+        Notification({
+          title: '干什么呀',
+          message: "太敷衍也不行哦",
           type: 'error',
-          duration: 1000,
+          duration: 1500,
           showClose: false,
-          offset: 80
+          offset: 80,
         })
       } else {
         this.todos.push({ id: this.id++, text: this.text, done: false })
         this.text = ''
-        Message.success('添加成功')
+        Notification({
+          title: '添加成功',
+          message: '欢迎新成员',
+          type: 'success',
+          duration: 1500,
+          showClose: false,
+          offset: 80
+        })
       }
     },
-    // deltodo (todo) {
-    //   //弹框确认
-    //   this.$confirm('确定要删除吗？', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     // filter 数组过滤
-    //     this.todos = this.todos.filter(t => t != todo)
-    //     this.$notify({
-    //       type: 'success', message: '删除成功', duration: 1000, showClose: false,
-    //       offset: 80
-    //     })
-    //   }).catch(() => {
-    //     this.$notify({
-    //       type: 'error', message: '已取消删除', duration: 1000, showClose: false,
-    //       offset: 80
-    //     })
-    //   })
-
-    // },
     // 全选反选
     togglechecked () {
       this.todos.forEach(todo => {
@@ -96,24 +91,43 @@ export default {
     },
     // 删除所选
     removeAll () {
-      if (this.SelectState.length) {
+      if (this.selectState.length) {
         this.$confirm('确定要删除所选吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           // 将所有选中的todo过滤掉
-          this.todos = this.todos.filter(t => t.done != true)
-          // 重置全选按钮
-          this.checkedAll = false
+          this.todos = this.todos.filter(t => t.done == false)
           setTimeout(() => {
-            Message.success('删除成功')
+            Notification({
+              title: '往事',
+              message: '随风而去吧',
+              type: 'success',
+              duration: 1500,
+              showClose: false,
+              offset: 80
+            })
           }, 500);
         }).catch(() => {
-          Message.info('取消删除')
+          Notification({
+            title: '凡事',
+            message: '三思而后行',
+            type: 'info',
+            duration: 1500,
+            showClose: false,
+            offset: 80
+          })
         });
       } else {
-        Message.warning('暂未选择')
+        Notification({
+          title: '嗯?',
+          message: '没决定好要放下什么吗?',
+          type: 'error',
+          duration: 1500,
+          showClose: false,
+          offset: 80
+        })
       }
     }
   },
@@ -131,8 +145,9 @@ export default {
       // handeler 处理变化值
       handler (newvalue) {
         localStorage.setItem('todos-save', JSON.stringify(newvalue))
-        this.SelectState = this.todos.filter(todo => { return todo.done })
-        this.checkedAll = (this.SelectState.length === this.todos.length)
+        this.selectState = this.todos.filter(todo => { return todo.done })
+        this.checkedAll = (this.selectState.length === this.todos.length)
+        this.id = this.todos.length
       },
     },
   }
@@ -166,26 +181,32 @@ export default {
   width: 40%;
 }
 
-.inputContent .el-input {
+.inputbox {
   transition: all 0.3s;
   margin-bottom: 10px;
 }
 
-.inputContent .el-input:hover {
+.inputbox:hover {
   transform: scale(1.1);
 }
 
-.inputContent .el-input ::placeholder {
+.inputbox ::placeholder {
   color: rgb(176, 173, 173);
 }
 
-.inputContent .el-button {
-  width: 25%;
+.inputContent .addbutton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.addbutton .el-button {
+  width: 50%;
   min-width: 170px;
   transition: all 0.6s ease-in-out;
 }
 
-.inputContent .el-button:hover {
+.addbutton .el-button:hover {
   background: #1346ee;
 }
 
@@ -199,17 +220,17 @@ export default {
 
 .editarea {
   position: absolute;
-  width: 48%;
+  top: -15px;
+  width: 46%;
   min-width: 425px;
-  height: 30px;
+  height: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 
 .selAll {
-  font-size: 1.1em;
-  width: 49px;
+  width: 50px;
   height: 37px;
   display: flex;
   align-items: center;
@@ -244,56 +265,37 @@ export default {
   white-space: nowrap;
 }
 
-.checkStyle {
-  margin: 0 10px;
-}
-
 .list {
   position: relative;
   display: flex;
-  align-items: center;
-  list-style: none;
   line-height: 40px;
   width: 100%;
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border: none;
-  border-bottom: 1px #fff solid;
   transition: all 0.6s ease-in-out;
   border-radius: 2px;
-  color: #fff;
+  color: rgb(150, 169, 168);
   background-color: rgb(58, 68, 86);
 }
 
 .list:hover {
+  color: #fff;
   background-color: #1f74be;
 }
 
-/* .list:hover .del {
-  background: transparent;
-  transform: scale(1);
-  color: black;
-} */
-
-/* .del {
-  position: absolute;
-  right: 2%;
-  cursor: pointer;
-  user-select: none;
-  border: none;
-  transform: scale(0);
-  transition: all 0.3s;
-} */
+.check_state {
+  margin: 0 10px;
+}
 
 .animateforli-enter,
-.animateforli.leave-to {
+.animateforli-leave-to {
   opacity: 0;
-  transform: scale(0);
 }
 
 .animateforli-enter-active,
 .animateforli.leave-active {
-  transition: all 1s ease-in-out;
+  transition: all .6s ease-in-out;
 }
 
 .finish {
@@ -301,7 +303,7 @@ export default {
 }
 
 .finish:hover {
-  background: #a2e97f;
+  background: #605f5f;
 }
 
 .active {
