@@ -13,8 +13,7 @@
           <el-option :value="form.allPermissions[1].permissionsName"></el-option>
           <el-option :value="form.allPermissions[2].permissionsName"></el-option>
         </el-select>
-        <el-button type="success" icon="el-icon-search" @keydown.native.enter="searchBtn"
-          @click="searchBtn">搜索</el-button>
+        <!-- <el-button type="success" icon="el-icon-search" @click="searchBtn">搜索</el-button> -->
       </div>
       <el-table :data="filterUserlist.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border
         highlight-current-row lazy>
@@ -57,8 +56,8 @@
         </div>
       </el-dialog>
       <div class="page">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-          :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="total">
+        <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+          layout="total, prev, pager, next" :total="this.filterUserlist.length">
         </el-pagination>
       </div>
     </div>
@@ -72,28 +71,22 @@ export default {
   inject: ['childrenRouterRefresh'],
   data () {
     return {
-      userlist: [],
+      userlist: '',
       filterUserlist: [],
       ownPermission: false,
       dialogFormVisible: false,
       formLabelWidth: '120px',
       form: {
-        allPermissions: [],
+        allPermissions: '',
         rowUser: []
       },
       currentPage: 1,
       pageSize: 10,
-      total: null,
       searchPermissionsName: '',
       searchName: '',
     }
   },
   methods: {
-    // 每一页条数改变时触发 选择一页多少条数据
-    handleSizeChange (value) {
-      this.currentPage = 1;
-      this.pageSize = value
-    },
     // 当前页面变化时 跳转其他页面
     handleCurrentChange (value) {
       this.currentPage = value
@@ -103,16 +96,25 @@ export default {
       // 变量searchPermissionsName有值
       if (!this.searchPermissionsName == '') {
         this.filterUserlist = this.userlist.filter(item => item.permissionsName == this.searchPermissionsName)
+        /**
+         * 坑记录: 分类后有的类型页数有很多 简称A,有的类型页数很少 简称B,
+         * 这时候的选A的页数大于B的话,再切换到B就会出现空数据,只有刷新才会显示,
+         * 所以需要设置当前页为1
+         */
+        this.currentPage = 1
         // 两个变量都有值
         if (!this.searchName == '') {
           this.filterUserlist = this.userlist.filter(item => item.permissionsName == this.searchPermissionsName && item.username.includes(this.searchName))
         }
       }
+      // 两个变量都没有值的时候
+      else if (this.searchName == '' && this.searchPermissionsName == '') {
+        this.filterUserlist = this.userlist
+      }
       // 变量searchPermissionsName无值
       else {
         this.filterUserlist = this.userlist.filter(item => item.username.includes(this.searchName))
       }
-      // 两个变量都没有值的时候 watch 做了
     },
     // 编辑用户列表
     editRow (row) {
@@ -122,10 +124,27 @@ export default {
     // 删除用户列表
     deleteRow (row) {
       this.NProgress.start()
-      // 数组过滤
-      this.userlist = this.userlist.filter(info => info.userId != row.userId)
       // 后台更新
       delData(row.userId).then((result) => {
+        // 数组过滤
+        /**
+         * 坑记录:这是之前的写法
+         *  this.filterUserlist = this.userlist.filter(user => user.userId != row.userId)
+         * 当这里过滤数组更新后,原数组是没有变化的,所以删除一个单元后只是过滤数组删除了,
+         * 到刷新页面了后发现,删除的单元又出现了,并且搞笑的是,在不分类的情况下连续删除会不断重复将删除的元素重新放到第一格,
+         * 就像一个气球你放水里又浮上来,放水里又又浮上来..
+         * 因此在这里 过滤数组删除的时候,原数组做相同操作就OK了
+         */
+        this.filterUserlist = this.filterUserlist.filter(user => user.userId != row.userId)
+        this.userlist = this.userlist.filter(user => user.userId != row.userId)
+        /**
+         * 坑记录:element el-pagination分页最后一页数据清空了页码显示正确，但是列表为空
+         * 造成原因:最后一页数据清空时,总页数发生变化,但是当前页(currentPage)还是之前页数,所以列表为空
+         * 解决方法:查阅得以解决:1.计算总页数 2.判断当前页是否大于总页数,以及是否小于1页 3.赋值给当前页
+         */
+        const totalPage = Math.ceil(this.filterUserlist.length / this.pageSize)
+        const currentPage = this.currentPage > totalPage ? totalPage : this.currentPage
+        this.currentPage = currentPage < 1 ? 1 : currentPage
         this.$message({
           type: 'success',
           message: result.data.msg,
@@ -180,7 +199,7 @@ export default {
   },
   mounted () {
     // 判断是否存在用户列表 不存在就向后端发请求
-    if (!this.userlist.length) {
+    if (!this.userlist) {
       // 获取权限id
       const { permissionsId } = JSON.parse(localStorage.getItem('userinfo-save'))
       getUserList(permissionsId).then((result) => {
@@ -191,43 +210,35 @@ export default {
         // 获取用户列表 并赋值
         this.userlist = userlist
         // 过滤数组赋值
-        this.filterUserlist = userlist
-        // 总页数赋值
-        this.total = userlist.length
+        this.filterUserlist = this.userlist
+        // 判断是否存在allPermissions 不存在就向后端发请求
+        if (!this.form.allPermissions) {
+          getPermissionsList().then((result) => {
+            const { permissionsList } = result.data.data
+            this.form.allPermissions = permissionsList
+          }).catch((err) => {
+            console.log(error);
+          });
+        }
       }).catch((err) => {
-        console.log(err);
-      });
-    }
-    // 判断是否存在allPermissions 不存在就向后端发请求
-    if (!this.form.allPermissions.length) {
-      getPermissionsList().then((result) => {
-        const { permissionsList } = result.data.data
-        this.form.allPermissions = permissionsList
-      }).catch((err) => {
-        console.log(err);
+        this.$message({
+          type: 'error',
+          message: "服务器断开",
+          duration: 2000,
+          showClose: false
+        })
       });
     }
   },
   watch: {
-    // 监听过滤数组,一旦变化就修改页脚数据
-    filterUserlist: {
-      immediate: true,
-      handler () {
-        this.total = this.filterUserlist.length
-        this.currentPage = 1
-      }
-    },
     // 监听 这两个变量值为空的时候就及时修改列表
     searchName () {
-      if (this.searchName == '' && this.searchPermissionsName == '') {
-        this.filterUserlist = this.userlist
-      }
+      this.searchBtn()
     },
     searchPermissionsName () {
-      if (this.searchName == '' && this.searchPermissionsName == '') {
-        this.filterUserlist = this.userlist
-      }
-    }
+      this.searchBtn()
+    },
+
   }
 }
 </script>
