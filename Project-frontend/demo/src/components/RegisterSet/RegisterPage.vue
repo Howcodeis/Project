@@ -16,6 +16,12 @@
       <input type="password" v-model="password" required />
       <label>请输入密码</label>
     </div>
+    <div class="gender">
+      <span>性别:</span>
+      <el-switch style="display: block" v-model="switchState" active-color="blue" inactive-color="red" active-text="男"
+        inactive-text="女">
+      </el-switch>
+    </div>
     <button class="submitbtn" @click="register" v-PreventReClick>注册</button>
     <div class="toggle">
       <span>已有账号？点击这里
@@ -26,8 +32,8 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
-import { registerBack } from '@/utils/AxiosBack';
+import { AxiosBack } from '@/utils/AxiosBack';
+import { MessageBack } from '@/utils/MessageBack';
 export default {
   name: "MyRegister",
   props: { dataFn: Function },
@@ -35,39 +41,45 @@ export default {
     return {
       username: '',
       password: '',
+      switchState: false,
+      gender: ''
     }
   },
   methods: {
     register () {
-      registerBack(this.username, this.password).then((result) => {
+      AxiosBack.registerBack(this.username, this.password, this.gender).then((result) => {
         const { msg, code } = result.data
         if (code == 200) {
-          Message.success({
-            message: msg,
-            duration: 2000
-          })
+          MessageBack.normalBack('success', msg)
           setTimeout(() => {
-            // 方法暂未更新  !!!!
-            this.$store.state.isToggle = true
+            this.dataFn(true)
           }, 1000)
         } else {
-          Message.error({
-            message: msg,
-            duration: 2000
-          })
+          MessageBack.normalBack('error', msg)
         }
       }).catch(erro => {
-        Message.error({
-          message: '服务器断开',
-          duration: 2000
-        })
-        this.NProgress.done()
+        MessageBack.serverErrorBack()
       })
     },
+  },
+  watch: {
+    switchState: {
+      immediate: true,
+      handler () {
+        this.switchState ? this.gender = "男" : this.gender = "女"
+      },
+    }
   }
 }
 </script>
 
 <style scoped>
 @import "@/assets/css/login-register.css";
+
+.gender {
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+}
 </style>

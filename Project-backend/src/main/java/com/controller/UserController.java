@@ -63,9 +63,9 @@ public class UserController {
 
     @ApiOperation("注册")
     @PostMapping("/register")
-    public JsonResult save(String username, String password, String date) throws NormalException {
+    public JsonResult save(String username, String password, String gender, String date) throws NormalException {
         try {
-            userService.register(username, password, date);
+            userService.register(username, password, gender, date);
             return JsonResult.success("注册成功");
         } catch (NormalException e) {
             return JsonResult.fail(e.getMessage());

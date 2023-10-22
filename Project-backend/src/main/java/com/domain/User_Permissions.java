@@ -8,9 +8,27 @@ public class User_Permissions {
     private int permissionsId;
     private String username;
     private String permissionsName;
+    private String gender;
+    private String avatar;
     private Date date;
 
     public User_Permissions() {
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public int getPermissionsId() {
@@ -57,8 +75,11 @@ public class User_Permissions {
     public String toString() {
         return "User_Permissions{" +
                 "userId=" + userId +
+                ", permissionsId=" + permissionsId +
                 ", username='" + username + '\'' +
                 ", permissionsName='" + permissionsName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", date=" + date +
                 '}';
     }

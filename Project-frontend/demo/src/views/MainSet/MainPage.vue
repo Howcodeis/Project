@@ -1,9 +1,9 @@
 <template>
-  <div class='mainContent'>
-    <div class="headContent">
+  <div class='main-container'>
+    <div class="head-container">
       <h1>瞎搞的项目</h1>
     </div>
-    <div class="bodyContent">
+    <div class="body-container">
       <!-- 列表图片 鼠标放上去会出现详细信息 同时也能点击 定位到特定位置 -->
       <h1>这部分介绍项目过程和心得</h1>
       <div class="imgbox">
@@ -21,7 +21,7 @@
         </ul>
       </div>
     </div>
-    <div class="footerContent">
+    <div class="foo-container">
       <!-- 图标啥的加上美观 -->
       <h1>这部分介绍github地址 微信 qq等</h1>
     </div>
@@ -85,7 +85,7 @@ p {
   font-weight: 400;
 }
 
-.mainContent {
+.main-container {
   position: relative;
   width: 100%;
   height: 100%;
@@ -95,13 +95,13 @@ p {
   align-items: center;
 }
 
-.headContent {
+.head-container {
   width: 100%;
   position: relative;
   flex: 1;
 }
 
-.bodyContent {
+.body-container {
   position: relative;
   width: 100%;
   flex: 2;
@@ -179,7 +179,7 @@ p {
   opacity: 1;
 }
 
-.footerContent {
+.foo-container {
   flex: 1;
   position: relative;
   width: 100%;

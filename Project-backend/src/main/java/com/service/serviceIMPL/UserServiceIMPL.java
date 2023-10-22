@@ -34,7 +34,7 @@ public class UserServiceIMPL implements UserService {
     }
 
     @Override
-    public void register(String username, String password, String date) throws NormalException {
+    public void register(String username, String password, String gender, String date) throws NormalException {
 //        查询用户
         User user = userMapper.select(username);
         if (Objects.requireNonNull(username).trim().isEmpty()
@@ -43,7 +43,7 @@ public class UserServiceIMPL implements UserService {
         }
 //        检查是否存在用户
         else if (user == null) {
-            userMapper.save(username, password, date);
+            userMapper.save(username, password, gender, date);
         } else {
             throw new NormalException("账号已存在");
         }

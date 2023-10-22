@@ -21,13 +21,11 @@ router.beforeEach((to, from, next) => {
   // hastoken
   if (token) {
     next()
-    NProgress.done()
   }
   // no token
   else {
     if (whiteList.indexOf(to.name) !== -1) {
       next()
-      NProgress.done()
     } else {
       Message({
         type: 'error',
@@ -35,10 +33,9 @@ router.beforeEach((to, from, next) => {
         showClose: false,
         duration: 1500
       })
-
-      NProgress.done()
     }
   }
+  NProgress.done()
 })
 router.afterEach(() => {
   NProgress.done()

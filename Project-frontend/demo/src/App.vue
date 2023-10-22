@@ -1,11 +1,9 @@
 <template>
   <div id="app">
     <!-- ended 歌曲或视频结束调用函数 -->
-    <audio :src=musicList() ref="music" loop></audio>
-    <keep-alive include='music'>
-      <router-view v-if="isRouterAlive">
-      </router-view>
-    </keep-alive>
+    <audio id="ttt" :src=musicList() ref="music" loop></audio>
+    <router-view v-if="isRouterAlive">
+    </router-view>
   </div>
 </template>
 
@@ -24,7 +22,7 @@ export default {
     }
     return {
       isRouterAlive: true,
-      musicList
+      musicList,
     }
   },
   methods: {
@@ -49,7 +47,7 @@ export default {
     }).catch((err) => {
       console.log(err);
     });
-  }
+  },
 }
 </script>
 
@@ -58,6 +56,7 @@ export default {
   padding: 0;
   margin: 0;
   text-decoration: none;
+  list-style: none;
 }
 
 html,
@@ -76,6 +75,7 @@ body {
 ::-webkit-scrollbar {
   width: 1px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #898989;
   border-radius: 8px;

@@ -40,22 +40,23 @@ public class JsonResult {
     public void setMsg(String msg) {
         this.msg = msg;
     }
-    public void setJsonResult(boolean success, int code, String msg) {
+
+//    有参构造
+    private JsonResult(boolean success, int code, String msg) {
         this.success = success;
         this.code = code;
         this.msg = msg;
     }
-    //构造方法私有化
+
+    //构造方法私有化 无参构造
     private JsonResult() {
     }
 
     //成功静态方法
     public static JsonResult success() {
-        JsonResult jsonResult = new JsonResult();
-        jsonResult.setJsonResult(true, 200, "登录成功");
-        return jsonResult;
-    }
+        return new JsonResult(true, 200, "登录成功");
 
+    }
     //成功静态方法 自定义信息
     public static JsonResult success(String msg) {
         JsonResult success = JsonResult.success();
@@ -65,9 +66,8 @@ public class JsonResult {
 
     //    失败的静态方法
     public static JsonResult fail() {
-        JsonResult jsonResult = new JsonResult();
-        jsonResult.setJsonResult(false,401,"登录失败");
-        return jsonResult;
+        return new JsonResult(false, 401, "登录失败");
+
     }
 
     //    失败静态方法 自定义信息
@@ -95,12 +95,7 @@ public class JsonResult {
 
     @Override
     public String toString() {
-        return "JsonResult{" +
-                "success=" + success +
-                ", msg='" + msg + '\'' +
-                ", code=" + code +
-                ", data=" + data +
-                '}';
+        return "JsonResult{" + "success=" + success + ", msg='" + msg + '\'' + ", code=" + code + ", data=" + data + '}';
     }
 
 }

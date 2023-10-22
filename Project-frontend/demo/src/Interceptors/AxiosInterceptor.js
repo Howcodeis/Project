@@ -1,4 +1,3 @@
-import router from "./RouterRules";
 import axios from "axios";
 import nProgress from "nprogress";
 
@@ -15,6 +14,7 @@ AxiosInterceptor.interceptors.request.use(
     return config;
   },
   error => {
+    nProgress.done()
     Promise.reject(error)
   })
 AxiosInterceptor.interceptors.response.use(
@@ -25,7 +25,7 @@ AxiosInterceptor.interceptors.response.use(
   error => {
     nProgress.done()
     return Promise.reject(error)
-  }
+  },
 )
 
 export default AxiosInterceptor

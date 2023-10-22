@@ -1,37 +1,38 @@
 <template>
-  <div class="box">
-    <div class="topContent">
-      <div class="inputContent">
-        <div class="inputbox">
+  <div class="todos-container">
+    <div class="top-container">
+      <div class="input-container">
+        <div class="text-input">
           <el-input type="text" v-model="text" clearable :placeholder="$store.state.SentenceAbout.sentence"
             @keydown.native.enter="addtodo">
           </el-input>
         </div>
-        <div class="addbutton">
+        <div class="add-btn">
           <!-- 侧边栏提示 需要plain 属性 -->
           <el-button plain type="success" @click="addtodo">添加到备忘录</el-button>
         </div>
       </div>
     </div>
-    <div class="contentBox">
-      <div class="editarea">
+    <div class="body-container">
+      <div class="edit-area">
         <!-- @change checkBox 属性变化时函数执行 -->
         <!-- 全选按钮 -->
-        <el-checkbox title="全部选中&全部取消" class="selAll" type="checkbox" v-model="checkedAll" @change="togglechecked"
+        <el-checkbox title="全部选中&全部取消" class="select-all" type="checkbox" v-model="checkedAll" @change="togglechecked"
           v-show="todos.length" />
         <!-- 全删按钮 -->
-        <el-button title="删除所选" class="el-icon-delete delAll" size="small" v-show="todos.length" @click="removeAll" />
+        <el-button title="删除所选" class="el-icon-delete del-selected" size="small" v-show="todos.length"
+          @click="removeAll" />
       </div>
-      <div class="todoBox">
+      <div class="todo-list">
         <ul>
-          <transition-group name="animateforli" appear tag="li">
+          <transition-group name="actions" appear tag="li">
             <!-- 遍历数组 -->
             <li role="none" class="list" v-for="(   todo, index   ) of    todos   " :key="index" :title="todo.text"
               :class="{ finish: todo.done }">
-              <div class="check_state">
+              <div class="check-state">
                 <el-checkbox type="checkbox" v-model="todo.done" title="done?" />
               </div>
-              <div class="textSpace" :class="{ active: todo.done }">
+              <div class="text-space" :class="{ active: todo.done }">
                 <slot name="todos" :todo="todo">{{ todo.text }}</slot>
               </div>
             </li>
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import { Notification } from 'element-ui'
+import { MessageBack } from '../../utils/MessageBack'
 
 export default {
   name: 'MyTodos',
@@ -62,25 +63,11 @@ export default {
     addtodo () {
       if (this.text.length < 2) {
         // 侧栏提示
-        Notification({
-          title: '干什么呀',
-          message: "太敷衍也不行哦",
-          type: 'error',
-          duration: 1500,
-          showClose: false,
-          offset: 80,
-        })
+        MessageBack.notificationBack("干什么呀", "太敷衍也不行哦", 'error', 80)
       } else {
         this.todos.push({ id: this.id++, text: this.text, done: false })
         this.text = ''
-        Notification({
-          title: '添加成功',
-          message: '欢迎新成员',
-          type: 'success',
-          duration: 1500,
-          showClose: false,
-          offset: 80
-        })
+        MessageBack.notificationBack("添加成功", "欢迎新成员", 'success', 80)
       }
     },
     // 全选反选
@@ -100,34 +87,13 @@ export default {
           // 将所有选中的todo过滤掉
           this.todos = this.todos.filter(t => t.done == false)
           setTimeout(() => {
-            Notification({
-              title: '往事',
-              message: '随风而去吧',
-              type: 'success',
-              duration: 1500,
-              showClose: false,
-              offset: 80
-            })
+            MessageBack.notificationBack("往事", "随风而去吧", 'success', 80)
           }, 500);
         }).catch(() => {
-          Notification({
-            title: '凡事',
-            message: '三思而后行',
-            type: 'info',
-            duration: 1500,
-            showClose: false,
-            offset: 80
-          })
+          MessageBack.notificationBack("凡事", "三思而后行", 'info', 80)
         });
       } else {
-        Notification({
-          title: '嗯?',
-          message: '没决定好要放下什么吗?',
-          type: 'error',
-          duration: 1500,
-          showClose: false,
-          offset: 80
-        })
+        MessageBack.notificationBack("嗯?", "没决定好要放下什么吗", 'error', 80)
       }
     }
   },
@@ -155,62 +121,67 @@ export default {
 </script>
 
 <style scoped>
-.box {
+.todos-container {
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.box ::-webkit-scrollbar {
+.todos-container ::-webkit-scrollbar {
   width: 0;
 }
 
-.topContent {
+.top-container {
   position: relative;
-  width: 100%;
+  width: 60%;
   height: 25%;
   margin-top: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.inputContent {
+.input-container {
   position: relative;
   top: 10%;
   width: 40%;
 }
 
-.inputbox {
+.text-input {
   transition: all 0.3s;
   margin-bottom: 10px;
 }
 
-.inputbox:hover {
+.text-input:hover {
   transform: scale(1.1);
 }
 
-.inputbox ::placeholder {
+.text-input ::placeholder {
   color: rgb(176, 173, 173);
 }
 
-.inputContent .addbutton {
+.input-container .add-btn {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.addbutton .el-button {
+.add-btn .el-button {
   width: 50%;
   min-width: 170px;
   transition: all 0.6s ease-in-out;
 }
 
-.addbutton .el-button:hover {
+.add-btn .el-button:hover {
   background: #1346ee;
 }
 
-.contentBox {
+.body-container {
   position: relative;
   display: flex;
   justify-content: center;
@@ -218,9 +189,9 @@ export default {
   height: 60%;
 }
 
-.editarea {
+.edit-area {
   position: absolute;
-  top: -15px;
+  top: -18px;
   width: 46%;
   min-width: 425px;
   height: 40px;
@@ -229,7 +200,7 @@ export default {
   align-items: center;
 }
 
-.selAll {
+.select-all {
   width: 50px;
   height: 37px;
   display: flex;
@@ -237,14 +208,14 @@ export default {
   justify-content: center;
 }
 
-.delAll {
+.del-selected {
   font-size: 1.2em;
   color: aliceblue;
   border: none;
   background: transparent;
 }
 
-.todoBox {
+.todo-list {
   position: relative;
   top: 30px;
   width: 45%;
@@ -254,11 +225,11 @@ export default {
   padding-right: 6px;
 }
 
-.todoBox::-webkit-scrollbar {
+.todo-list::-webkit-scrollbar {
   width: 2px;
 }
 
-.textSpace {
+.text-space {
   width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -284,17 +255,17 @@ export default {
   background-color: #1f74be;
 }
 
-.check_state {
+.check-state {
   margin: 0 10px;
 }
 
-.animateforli-enter,
-.animateforli-leave-to {
+.actions-enter,
+.actions-leave-to {
   opacity: 0;
 }
 
-.animateforli-enter-active,
-.animateforli.leave-active {
+.actions-enter-active,
+.actions.leave-active {
   transition: all .6s ease-in-out;
 }
 

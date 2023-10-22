@@ -16,8 +16,8 @@ public interface UserMapper {
 
 
     //     注册
-    @Insert("insert into user (username, password, permissions_id, date) values (#{username}, #{password}, 3, #{date})")
-    void save(String username, String password, String date);
+    @Insert("insert into user (username, password, permissions_id, gender, date) values (#{username}, #{password}, 3, #{gender}, #{date})")
+    void save(String username, String password, String gender, String date);
 
     //    删除
     @Delete("delete from user where user_id = #{userId}")

@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import { loginBack } from '@/utils/AxiosBack'
-import { Message } from 'element-ui'
+import { AxiosBack } from '@/utils/AxiosBack'
 import { setUserData, setItem } from '@/utils/setUserInfo'
+import { MessageBack } from '@/utils/MessageBack'
 export default {
   name: "MyLogin",
   inject: ['reload'],
@@ -49,32 +49,21 @@ export default {
   },
   methods: {
     login () {
-      loginBack(this.username, this.password).then((result) => {
-        console.log(result);
+      AxiosBack.loginBack(this.username, this.password).then((result) => {
         const { msg, code } = result.data
         if (code == 200) {
-          Message.success({
-            message: msg,
-            duration: 2000
-          })
+          MessageBack.normalBack('success', msg)
           const { token, user } = result.data.data
           const { userId, username, permissionsId } = user
           setItem(JSON.stringify(setUserData(userId, username, permissionsId, token)))
           this.reload()
         }
         else {
-          Message.warning({
-            message: msg,
-            duration: 2000
-          })
+          MessageBack.normalBack('warning', msg)
         }
       }).catch((err) => {
-        Message.error({
-          message: '服务器断开',
-          duration: 2000
-        })
-        this.NProgress.done()
-      });
+        MessageBack.serverErrorBack()
+      })
     }
   },
 }

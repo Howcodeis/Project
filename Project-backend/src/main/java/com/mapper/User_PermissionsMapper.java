@@ -10,7 +10,7 @@ import java.util.List;
 public interface User_PermissionsMapper {
 
     //    查询所有用户
-    @Select("select u.user_id, u.username ,u.date, p.permissions_name from user u inner join permissions p on u.permissions_id = p.id")
+    @Select("select u.avatar,u.gender, u.user_id, u.username ,u.date, p.permissions_name from user u inner join permissions p on u.permissions_id = p.id")
     List<User_Permissions> selectAll();
 
 //    权限更新
