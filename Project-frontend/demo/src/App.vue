@@ -1,14 +1,15 @@
 <template>
   <div id="app">
-    <!-- ended 歌曲或视频结束调用函数 -->
-    <audio id="ttt" :src=musicList() ref="music" loop></audio>
-    <router-view v-if="isRouterAlive">
-    </router-view>
+    <HomePage>
+      <router-view v-if="isRouterAlive">
+      </router-view>
+    </HomePage>
   </div>
 </template>
 
 <script>
 import { getSentence } from '@/utils/FamousSentence'
+import HomePage from './components/HomeSet/HomePage.vue'
 export default {
   name: 'App',
   provide () {
@@ -16,6 +17,7 @@ export default {
       reload: this.reload
     }
   },
+  components: { HomePage },
   data () {
     const musicList = () => {
       return new URL('@/assets/music/Self Love.wav', import.meta.url).href
@@ -52,6 +54,8 @@ export default {
 </script>
 
 <style>
+@import url("./assets/iconfont/iconfont.css");
+
 * {
   padding: 0;
   margin: 0;

@@ -13,7 +13,7 @@ const router = new VueRouter({
   // },
   routes
 })
-const whiteList = ['home', 'todolist', 'musiclist', 'main']
+const whiteList = ['todolist', 'main']
 // 拦截
 router.beforeEach((to, from, next) => {
   const { permissionsId, token } = JSON.parse(localStorage.getItem('userinfo-save')) || ''

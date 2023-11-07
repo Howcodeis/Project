@@ -1,0 +1,93 @@
+{
+  "id": "4315418",
+  "name": "music",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1159911",
+      "name": "左播放",
+      "font_class": "zuobofang",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "1159913",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "1159887",
+      "name": "下载",
+      "font_class": "xiazai",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "1159888",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "1159896",
+      "name": "单曲循环",
+      "font_class": "danquxunhuan",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "1159897",
+      "name": "单曲播放",
+      "font_class": "danqubofang",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "1159898",
+      "name": "随机播放",
+      "font_class": "suijibofang",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "1159899",
+      "name": "关闭音量",
+      "font_class": "guanbiyinliang",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "1159902",
+      "name": "音量",
+      "font_class": "yinliang",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "1159906",
+      "name": "停止",
+      "font_class": "tingzhi",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "1159909",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "1159910",
+      "name": "右播放",
+      "font_class": "youbofang",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    }
+  ]
+}

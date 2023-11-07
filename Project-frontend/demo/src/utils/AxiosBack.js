@@ -10,8 +10,8 @@ export const AxiosBack = {
    * @param {string} password 
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async loginBack (username, password) {
-    return await AxiosInterceptor({
+  loginBack (username, password) {
+    return AxiosInterceptor({
       method: 'get',
       url: '/login',
       params: {
@@ -27,8 +27,8 @@ export const AxiosBack = {
    * @param {string} password 
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async registerBack (username, password, gender) {
-    return await AxiosInterceptor({
+  registerBack (username, password, gender) {
+    return AxiosInterceptor({
       method: 'post',
       url: '/register',
       params: {
@@ -45,8 +45,8 @@ export const AxiosBack = {
    * @param {number} permissionsId 
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async getUserList (permissionsId) {
-    return await AxiosInterceptor({
+  getUserList (permissionsId) {
+    return AxiosInterceptor({
       method: 'get',
       url: '/userlist',
       params: {
@@ -58,8 +58,8 @@ export const AxiosBack = {
    * 获取权限列表
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async getPermissionsList () {
-    return await AxiosInterceptor({
+  getPermissionsList () {
+    return AxiosInterceptor({
       method: 'get',
       url: '/permission'
     })
@@ -72,8 +72,8 @@ export const AxiosBack = {
    * @param {string} username 
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async setUpdate (permissionsId, userId, username) {
-    return await AxiosInterceptor({
+  setUpdate (permissionsId, userId, username) {
+    return AxiosInterceptor({
       method: 'post',
       url: '/update',
       params: {
@@ -89,8 +89,8 @@ export const AxiosBack = {
    * @param {number} userId 
    * @returns {Promise<any>} 这是一个Promise对象
    */
-  async delDate (userId) {
-    return await AxiosInterceptor({
+  delDate (userId) {
+    return AxiosInterceptor({
       method: 'post',
       url: '/delete',
       params: {
@@ -100,33 +100,52 @@ export const AxiosBack = {
   },
 
   /**
-   * 
+   * 搜索歌曲
    * @param {object} keyword 
    * @returns {Promise}
    */
-  async searchMusic (keyword, timestamp) {
-    return await MusciAxiosInterceptor({
+  searchMusic (keyword, timestamp) {
+    return MusciAxiosInterceptor({
       method: 'get',
       url: `/search?keywords=${keyword}&timestamp=${timestamp}`
     })
   },
 
   /**
-   * 
+   * 获取歌曲
    * @param {number} id 
    * @returns {Promise}
    */
-  async getSongUrl (id, timestamp) {
-    return await MusciAxiosInterceptor({
+  getSongUrl (id, timestamp) {
+    return MusciAxiosInterceptor({
       method: 'get',
       url: `/song/url/v1?id=${id}&level=standard&timestamp=${timestamp}`
     })
   },
 
-  async getSongLrc (id, timestamp) {
-    return await MusciAxiosInterceptor({
+  /**
+   * 获取歌曲歌词
+   * @param {number} id 
+   * @param {number} timestamp 
+   * @returns {Promise}
+   */
+  getSongLrc (id, timestamp) {
+    return MusciAxiosInterceptor({
       method: 'get',
       url: `/lyric?id=${id}&timestamp=${timestamp}`
+    })
+  },
+
+  /**
+   * 获取歌曲详情
+   * @param {number} id 
+   * @param {number} timestamp 
+   * @returns {Promise}
+   */
+  getSongDetail (id, timestamp) {
+    return MusciAxiosInterceptor({
+      method: 'get',
+      url: `/song/detail?ids=${id}&timestamp=${timestamp}`
     })
   }
 }

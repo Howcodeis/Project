@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import LoginPage from '../LoginSet/LoginPage.vue';
-import RegisterPage from '../RegisterSet/RegisterPage.vue';
+import LoginPage from '@/layout/LoginSet/LoginPage.vue'
+import RegisterPage from '@/layout/RegisterSet/RegisterPage.vue';
 export default {
   name: "MyWrapper",
   inject: ['reload'],

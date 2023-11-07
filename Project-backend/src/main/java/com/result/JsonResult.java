@@ -41,7 +41,7 @@ public class JsonResult {
         this.msg = msg;
     }
 
-//    有参构造
+    //    有参构造
     private JsonResult(boolean success, int code, String msg) {
         this.success = success;
         this.code = code;
@@ -57,11 +57,13 @@ public class JsonResult {
         return new JsonResult(true, 200, "登录成功");
 
     }
+
     //成功静态方法 自定义信息
     public static JsonResult success(String msg) {
-        JsonResult success = JsonResult.success();
-        success.setMsg(msg);
-        return success;
+        return new JsonResult(true, 200, msg);
+//        JsonResult success = JsonResult.success();
+//        success.setMsg(msg);
+//        return success;
     }
 
     //    失败的静态方法
@@ -72,9 +74,10 @@ public class JsonResult {
 
     //    失败静态方法 自定义信息
     public static JsonResult fail(String msg) {
-        JsonResult fail = JsonResult.fail();
-        fail.setMsg(msg);
-        return fail;
+        return new JsonResult(false, 401, msg);
+//        JsonResult fail = JsonResult.fail();
+//        fail.setMsg(msg);
+//        return fail;
     }
 
     public JsonResult data(String key, Object value) {
@@ -88,10 +91,10 @@ public class JsonResult {
         return this;
     }
 
-    public JsonResult data(Map<String, Object> map) {
-        this.setData(map);
-        return this;
-    }
+//    public JsonResult data(Map<String, Object> map) {
+//        this.setData(map);
+//        return this;
+//    }
 
     @Override
     public String toString() {

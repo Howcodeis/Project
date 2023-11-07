@@ -27,7 +27,7 @@
         <ul>
           <transition-group name="actions" appear tag="li">
             <!-- 遍历数组 -->
-            <li role="none" class="list" v-for="(   todo, index   ) of    todos   " :key="index" :title="todo.text"
+            <li role="none" class="list" v-for="todo of todos" :key="todo.id" :title="todo.text"
               :class="{ finish: todo.done }">
               <div class="check-state">
                 <el-checkbox type="checkbox" v-model="todo.done" title="done?" />

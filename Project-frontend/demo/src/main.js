@@ -8,6 +8,7 @@ import store from './store'
 import PreventReClick from './utils/PreventReClick' // 导入防止重复点击
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
+import './assets/iconfont/iconfont' // 引入iconfont.js
 
 Vue.prototype.NProgress = NProgress
 Vue.use(ElementUI)
