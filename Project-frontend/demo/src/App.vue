@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import { getSentence } from '@/utils/FamousSentence'
-import HomePage from './components/HomeSet/HomePage.vue'
+// import { getSentence } from '@/utils/FamousSentence'
+import HomePage from './components/HomePage.vue'
 export default {
   name: 'App',
   provide () {
@@ -32,23 +32,22 @@ export default {
       this.isRouterAlive = false
       this.$nextTick(() => { this.isRouterAlive = true })
     },
-    playMusic (data) {
-      if (data) {
-        this.$refs.music.play()
-        this.$refs.music.volume = 0.1
-      } else {
-        this.$refs.music.pause()
-      }
-    },
+    // playMusic (data) {
+    //   if (data) {
+    //     this.$refs.music.play()
+    //     this.$refs.music.volume = 0.1
+    //   } else {
+    //     this.$refs.music.pause()
+    //   }
+    // },
   },
   mounted () {
-    this.$bus.$on('toplay', this.playMusic)
-    getSentence().then((result) => {
-      const { hitokoto } = result.data
-      this.$store.commit('SentenceAbout/setSentence', hitokoto)
-    }).catch((err) => {
-      console.log(err);
-    });
+    // getSentence().then((result) => {
+    //   const { hitokoto } = result.data
+    //   this.$store.commit('SentenceAbout/setSentence', hitokoto)
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
   },
 }
 </script>

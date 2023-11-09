@@ -3,7 +3,7 @@
     <div class="top-container">
       <div class="input-container">
         <div class="text-input">
-          <el-input type="text" v-model="text" clearable :placeholder="$store.state.SentenceAbout.sentence"
+          <el-input type="text" v-model="text" clearable placeholder="写点什么"
             @keydown.native.enter="addtodo">
           </el-input>
         </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { MessageBack } from '../../utils/MessageBack'
+import { MessageBack } from '@/utils/MessageBack'
 
 export default {
   name: 'MyTodos',

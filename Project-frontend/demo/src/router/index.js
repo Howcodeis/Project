@@ -5,7 +5,7 @@ const routes = [
     meta: {
       menu: '主页',
     },
-    component: () => import('@/views/MainSet/MainPage.vue')
+    component: () => import('@/views/MainPage.vue')
   },
   {
     path: "/userlist",
@@ -14,13 +14,13 @@ const routes = [
       menu: '成员管理',
       permissionsId: 1,
     },
-    component: () => import('@/views/UserListSet/UserList.vue')
+    component: () => import('@/views/UserList.vue')
   },
 
   {
     path: "/todolist",
     name: "todolist",
-    component: () => import('@/views/TodoListSet/TodoList.vue')
+    component: () => import('@/views/TodoList.vue')
   },
 
   {
@@ -28,7 +28,7 @@ const routes = [
     name: "userinfo",
     meta: {
     },
-    component: () => import('@/views/UserInfoSet/UserInfo.vue')
+    component: () => import('@/views/UserInfo.vue')
   },
 
 ]

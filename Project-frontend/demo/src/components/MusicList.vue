@@ -8,12 +8,12 @@
       <div class="music-details" v-show="isShowDetails">
         <div class="big-image">
           <div class="img-details">
-            <img :src="imgUrl || '默认图片路径'">
+            <img :src="musicImg || '默认图片路径'">
           </div>
         </div>
         <div class="big-lrc">
           <ul class="big-lrcDetails" ref="bigLrcUl" @scroll="artificiallyScroll($event)">
-            <li v-for="(lrc, index) in  lrcArray " :key="index" ref="lrcLi" @dblclick="skipLrc(lrc)">
+            <li v-for="(lrc, index) in  formatLrc " :key="index" ref="lrcLi" @dblclick="skipLrc(lrc)">
               <span :class="[currentLrcIndex === index ? 'highLight' : '']">
                 {{ lrc.words ? lrc.words : '\xa0' }}
               </span>
@@ -29,12 +29,12 @@
 
     <div class="music-container">
       <div class="search-bar">
-        <el-input type="text" v-model="keyword" @keydown.native.enter="getSearchMusicList">
+        <el-input type="text" v-model="keyword" @keydown.native.enter="getMusicList(keyword)">
         </el-input>
-        <el-button circle icon="el-icon-search" @click="getSearchMusicList"></el-button>
+        <el-button circle icon="el-icon-search" @click="getMusicList(keyword)"></el-button>
       </div>
       <ul class="song-ul">
-        <li v-for="single in searchMusicList" @dblclick="playaudio(single)" :key="single.id">{{ single.name }} -- {{
+        <li v-for="single in musicList" @dblclick="getSongUrl(single)" :key="single.id">{{ single.name }} -- {{
           single.artists[0].name }}</li>
       </ul>
 
@@ -43,7 +43,7 @@
     <div class="control-bar">
       <div class="song-img">
         <div class="img-set" @click="isShowDetails = !isShowDetails">
-          <img :src="imgUrl || '默认图片路劲'">
+          <img :src="musicImg || '默认图片路劲'">
         </div>
         <div class="song-name">
           <div class="name-space">
@@ -84,13 +84,13 @@
             </div> -->
             <input type="range" class="show-bar" @change="touchProgress" @input="changeProgress" min="0" max="100"
               v-model="percent" step="any">
-            <div class="d-time"><span>{{ dTime || '00:00' }}</span></div>
+            <div class="d-time"><span>{{ totalTime || '00:00' }}</span></div>
           </div>
           <!-- 迷你歌词 -->
           <transition name="small">
             <div class="small-lrc" v-show="!isShowDetails">
               <ul class="lrc-ul" ref="smallLrcUl">
-                <li v-for="(lrc, index) in  lrcArray " :key="index">
+                <li v-for="(lrc, index) in  formatLrc " :key="index">
                   <span>
                     {{ lrc.words ? lrc.words : '\xa0' }}
                   </span>
@@ -130,8 +130,10 @@
  * 6.歌曲进度条用 input的range属性来做(大致完成)
  * 7.歌曲播放可以缓存下来。下次播放无需再次发请求
  */
-import { AxiosBack } from '@/utils/AxiosBack'
-import { MessageBack } from '@/utils/MessageBack'
+import { mapActions } from 'pinia'
+import { mapState } from 'pinia'
+import musicPlayStore from '../store'
+import { set } from 'nprogress'
 export default {
   name: 'myMusic',
   inject: ['childrenRouterRefresh'],
@@ -140,20 +142,8 @@ export default {
     return {
       // 搜索关键字
       keyword: '',
-      // audio元素的属性值
-      musicUrl: '',
-      // 展示当前歌曲
-      currentSong: '',
-      // 当前歌曲索引
-      currentSongIndex: '',
-      // 搜索列表
-      searchMusicList: [],
-      // 歌词数组
-      lrcArray: [],
       // 当前歌词索引  高亮显示判断
       currentLrcIndex: '',
-      // 是否播放
-      isPlay: false,
       // 歌词滚动判断
       lrcCanMove: true,
       // 定时器
@@ -167,10 +157,6 @@ export default {
       volumeValue: 0.5,
       // 上次的音量数字
       beforeVolumeValue: '',
-      // 歌曲总时长
-      dTime: '',
-      // 图片路径
-      imgUrl: '',
       // 按钮状态值
       status: 1,
       // 音量状态值
@@ -179,35 +165,66 @@ export default {
       isShowDetails: '',
       // 假时间
       fakeTime: '',
-      // 当前时间 进度条百分比计算
-      curretTime: '',
       // 判断可否更新进度百分比
       isProgressMove: false,
       // 音量条显示
       isShowVolume: false,
+      isPlay: false,
 
     }
   },
   computed: {
-
+    ...mapState(musicPlayStore, {
+      musicUrl: 'musicUrl',
+      formatLrc: 'formatLrc',
+      musicImg: 'musicImg',
+      randomPlayId: 'randomPlayId',
+      currentSong: 'currentSong',
+      musicList: 'musicList'
+    }),
+    totalTime () {
+      if (this.currentSong)
+        return this.timeFormat((this.currentSong.duration / 1000))
+      else return '00:00'
+    },
+    currentSongIndex () {
+      if (this.currentSong)
+        return this.musicList.findIndex(item => item.id == this.currentSong.id)
+      else return ''
+    },
+    percentTime () {
+      return Math.floor((this.currentSong.duration / 1000 * (this.percent / 100)))
+    },
   },
   methods: {
-
+    ...mapActions(musicPlayStore, {
+      getSongUrl: 'getSongUrl',
+      getMusicList: 'getMusicList'
+    }),
+    // 歌词时长跟踪
+    timeFormat (time) {
+      let minute = Math.floor(time / 60)
+      let second = Math.floor(time) - minute * 60
+      if (minute <= 9) minute = "0" + minute
+      if (second <= 9) second = "0" + second
+      return minute + ":" + second
+    },
     // 当前时间分为 假时间 和 真时间 拖动进度条的时候动假时间  拖动完毕才修改真时间  假时间通过歌曲总时间(秒) / 进度条百分比
     // 拖动完毕执行
     touchProgress () {
-      this.$refs.audioControls.currentTime = this.curretTime
+      this.$refs.audioControls.currentTime = this.percentTime
       this.isProgressMove = false
     },
     // 拖动过程执行
     changeProgress () {
-      this.isProgressMove = true
-      this.curretTime = Math.floor((this.$refs.audioControls.duration * (this.percent / 100)))
-      this.fakeTime = this.timeFormat(this.curretTime)
+      if (this.currentSong) {
+        this.isProgressMove = true
+        this.fakeTime = this.timeFormat(this.percentTime)
+      } else {
+        return this.fakeTime = "00:00"
+      }
+
     },
-    // touchVolume () {
-    //   this.$refs.audioControls.volume = this.volumeValue
-    // },
 
     changeStatus () {
       // 列表循环
@@ -224,44 +241,42 @@ export default {
     handleBefore () {
       if (this.status == 1) {
         if (this.currentSongIndex === 0) {
-          this.currentSongIndex = this.searchMusicList.length - 1
-          const beforeSong = this.searchMusicList[this.currentSongIndex]
-          this.playaudio(beforeSong)
+          this.currentSongIndex = this.musicList.length - 1
+          const beforeSong = this.musicList[this.currentSongIndex]
+          this.getSongUrl(beforeSong)
         } else {
-          const beforeSong = this.searchMusicList[this.currentSongIndex - 1]
-          this.playaudio(beforeSong)
+          const beforeSong = this.musicList[this.currentSongIndex - 1]
+          this.getSongUrl(beforeSong)
         }
       } else if (this.status == 2) {
-        this.playaudio(this.currentSong)
+        this.getSongUrl(this.currentSong)
       } else {
-        const id = this.randomSong()
-        this.playaudio(this.searchMusicList[id])
+        this.getSongUrl(this.musicList[this.randomPlayId])
       }
 
     },
     handleNext () {
       if (this.status == 1) {
-        if (this.currentSongIndex === this.searchMusicList.length - 1) {
+        if (this.currentSongIndex === this.musicList.length - 1) {
           this.currentSongIndex = 0
-          const NextSong = this.searchMusicList[this.currentSongIndex]
-          this.playaudio(NextSong)
+          const NextSong = this.musicList[this.currentSongIndex]
+          this.getSongUrl(NextSong)
         } else {
-          const NextSong = this.searchMusicList[this.currentSongIndex + 1]
-          this.playaudio(NextSong)
+          const NextSong = this.musicList[this.currentSongIndex + 1]
+          this.getSongUrl(NextSong)
         }
       } else if (this.status == 2) {
-        this.playaudio(this.currentSong)
+        this.getSongUrl(this.currentSong)
       } else {
-        const id = this.randomSong()
-        this.playaudio(this.searchMusicList[id])
+        this.getSongUrl(this.musicList[this.randomPlayId])
       }
     },
     handlePlay () {
       if (this.isPlay) {
-        this.isPlay = !this.isPlay
+        this.isPlay = false
         this.$refs.audioControls.pause()
       } else {
-        this.isPlay = !this.isPlay
+        this.isPlay = true
         this.$refs.audioControls.play()
       }
     },
@@ -276,132 +291,14 @@ export default {
         this.volumeValue = this.beforeVolumeValue
       }
     },
-    // 获取搜索歌曲集合
-    async getSearchMusicList () {
-      if (this.keyword) {
-        await AxiosBack.searchMusic(this.keyword, Date.now())
-          .then(
-            result => {
-              if (result.status === 200) {
-                const { songs } = result.data.result
-                // 测试  歌曲列表
-                localStorage.setItem('searchList', JSON.stringify(songs))
-                this.initSearchMusicList(songs)
-                MessageBack.normalBack('success', "搜索成功")
-              }
-            })
-          .catch(
-            err => {
-              MessageBack.normalBack('error', '网络太拥挤!')
-              console.log(err);
-            })
-      } else {
-        MessageBack.normalBack('error', "请输入关键字")
-      }
-    },
-    // 将搜索的歌曲放在数组里
-    initSearchMusicList (songs) {
-      this.searchMusicList = JSON.parse(localStorage.getItem('searchList')) || songs
-      // 测试  歌词
-      // this.lrcArray = JSON.parse(localStorage.getItem('testlrc'))
-    },
-
-    // 传入song 通过song.id查询歌曲 再把歌曲url给html元素
-    async playaudio (song) {
-      const getSongUrl = AxiosBack.getSongUrl(song.id, Date.now())
-        .then(
-          result => {
-            if (result.status === 200) {
-              const { data } = result.data
-              this.handleSong(song, data)
-            }
-          })
-        .catch(
-          err => {
-            console.log(err);
-            return MessageBack.normalBack('warning', "网络太拥挤!")
-          })
-      // 获取歌词
-      const getSongLrc = AxiosBack.getSongLrc(song.id, Date.now())
-        .then(
-          result => {
-            const { lyric } = result.data.lrc
-            // 测试  歌词显示
-            // localStorage.setItem('SongLrc', JSON.stringify(lyric))
-            // 处理歌词
-            this.handleLrc(lyric)
-          })
-        .catch(
-          err => {
-            MessageBack.normalBack('warning', "获取歌词异常!")
-            console.log(err);
-          })
-      // 获取歌曲详情
-      const getSongDetail = AxiosBack.getSongDetail(song.id, Date.now())
-        .then(
-          res => {
-            const { picUrl } = res.data.songs[0].al
-            this.imgUrl = picUrl
-          })
-        .catch(
-          err => {
-            MessageBack.normalBack('warning', "获取歌曲详情异常!")
-            console.log(err);
-          })
-
-      await getSongUrl;
-      await getSongLrc;
-      await getSongDetail
-
-    },
-    handleSong (song, data) {
-      this.musicUrl = data[0]?.url
-      this.isPlay = true
-      // 调用查询当前歌曲的函数
-      this.currentSongIndex = this.searchMusicList.findIndex(item => item.id === song.id)
-      // 当前歌曲
-      this.currentSong = song
-      // 歌词时长跟踪
-      this.dTime = this.timeFormat((this.currentSong.duration / 1000))
-    },
-    // 处理歌词
-    handleLrc (lyric) {
-      // JSON.parse(localStorage.getItem('SongLrc'))
-      const notParseLrc = lyric
-      const parseLrc = notParseLrc.split('\n')
-      // 判断歌词是否存在 以便替换歌词
-      if (this.lrcArray != []) this.lrcArray = []
-      parseLrc.forEach(element => {
-        const lrcdetails = element.split(']')
-        // 转换时间
-        const time = lrcdetails[0].substring(1).split(':')
-        // 将时间转化为秒单位 
-        const parseTime = +time[0] * 60 + +time[1]
-        const lrcobj = {
-          time: parseTime,
-          words: lrcdetails[1]
-        }
-        this.lrcArray.push(lrcobj)
-        // 测试 格式化歌词
-        // localStorage.setItem('testlrc', JSON.stringify(this.lrcArray))
-      });
-    },
-    // 歌词时长跟踪
-    timeFormat (time) {
-      let minute = Math.floor(time / 60)
-      let second = Math.floor(time) - minute * 60
-      if (minute <= 9) minute = "0" + minute
-      if (second <= 9) second = "0" + second
-      return minute + ":" + second
-    },
     // 根据当前播放时间 查找当前歌词索引
     findCurrentLrcIndex () {
-      for (let i = 0; i < this.lrcArray.length; i++) {
-        if (this.$refs.audioControls.currentTime < this.lrcArray[i].time) {
+      for (let i = 0; i < this.formatLrc.length; i++) {
+        if (this.$refs.audioControls.currentTime < this.formatLrc[i].time) {
           return i - 1
         }
       }
-      return this.lrcArray.length - 2
+      return this.formatLrc.length - 2
     },
     // 根据当前播放时间查找当前歌词 计算偏移量
     findCurrentLrc () {
@@ -422,28 +319,22 @@ export default {
     },
     // 播放完  切换下一首
     playNext (val) {
-
       // playStyle(val)
       // 列表循环
       if (val == 1) {
-        this.timeOutbar(this.playaudio(this.searchMusicList[this.currentSongIndex + 1]), 1000)
+        this.timeOutbar(this.getSongUrl(this.musicList[this.currentSongIndex + 1]), 1000)
         // 单曲循环
       } else if (val == 2) {
-        this.timeOutbar(this.playaudio(this.searchMusicList[this.currentSongIndex]), 1000)
+        this.timeOutbar(this.getSongUrl(this.musicList[this.currentSongIndex]), 1000)
         // 随机播放
       } else {
-        const id = this.randomSong()
-        this.timeOutbar(this.playaudio(this.searchMusicList[id]), 1000)
+        this.timeOutbar(this.getSongUrl(this.musicList[this.randomPlayId]), 1000)
       }
     },
     timeOutbar (Object, time) {
       setTimeout(() => {
         Object
       }, time);
-    },
-    // 随机播放处理
-    randomSong () {
-      return Math.floor(Math.random() * (this.searchMusicList.length + 1))
     },
     // 双击歌词跳转
     skipLrc (lrc) {
@@ -468,10 +359,14 @@ export default {
         this.volumeValue == 0 ? this.isvolume = false : this.isvolume = true
         this.$refs.audioControls.volume = this.volumeValue
       }
+    },
+    musicUrl: {
+      handler () {
+        this.isPlay = true
+      }
     }
   },
   mounted () {
-    this.initSearchMusicList()
   },
 }
 </script>
@@ -676,8 +571,9 @@ export default {
   background-color: rgb(29, 29, 29);
 
   .song-img {
+    flex: 1;
     position: relative;
-    left: 1em;
+    left: 2%;
     width: 40%;
     display: flex;
     justify-content: center;
@@ -685,7 +581,7 @@ export default {
     user-select: none;
 
     .img-set {
-      width: 4em;
+      width: 15%;
       height: 90%;
       cursor: pointer;
 
@@ -733,9 +629,11 @@ export default {
 
   .song-collection {
     width: 30%;
+    flex: 1;
   }
 
   .progress-control {
+    flex: 1;
     display: flex;
     width: 40%;
     justify-content: center;

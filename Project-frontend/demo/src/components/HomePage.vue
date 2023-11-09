@@ -61,8 +61,8 @@
 </template>
 
 <script>
-import MusicList from '@/components/MusicListSet/MusicList.vue';
-import WrapperPage from '@/layout/Wrapper/WrapperPage.vue'
+import MusicList from '@/components/MusicList.vue';
+import WrapperPage from '@/layout/WrapperPage.vue'
 import { MessageBack } from '@/utils/MessageBack';
 export default {
   name: 'MyHome',
