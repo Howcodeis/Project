@@ -3,7 +3,7 @@ import nProgress from "nprogress";
 
 const AxiosInterceptor = axios.create({
   baseURL: "http://localhost:8088",
-  timeout: 5000
+  timeout: 5000,
 })
 
 AxiosInterceptor.interceptors.request.use(

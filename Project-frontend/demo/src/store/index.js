@@ -30,43 +30,29 @@ const musicPlayStore = defineStore('musicPlay', {
       });
       return formatLrc
     },
-    randomPlayId: (state) => Math.floor(Math.random() * (state.musicList.length + 1))
   },
   actions: {
     async getSongUrl (song) {
       try {
-        const res = await AxiosBack.getSongUrl(song.id, Date.now())
-        this.musicUrl = res.data.data[0]?.url
-        this.currentSong = song
-        this.getSongLrc(song.id)
+        await AxiosBack.getSongUrl(song.id).then(res => {
+          this.musicUrl = res.data.data[0]?.url
+          this.currentSong = song
+        })
+        await AxiosBack.getSongLrc(song.id).then(res => {
+          this.lyric = res.data.lrc.lyric
+        })
+        await AxiosBack.getSongDetail(song.id).then(res => {
+          this.musicImg = res.data.songs[0].al.picUrl
+        })
       } catch (error) {
         MessageBack.normalBack('warning', "网络太拥挤!")
-        return error
-      }
-    },
-    async getSongLrc (id) {
-      try {
-        const res = await AxiosBack.getSongLrc(id, Date.now())
-        this.lyric = res.data.lrc.lyric
-        this.getSongDetails(id)
-      } catch (error) {
-        MessageBack.normalBack('warning', "获取歌词异常!")
-        return error
-      }
-    },
-    async getSongDetails (id) {
-      try {
-        const res = await AxiosBack.getSongDetail(id, Date.now())
-        this.musicImg = res.data.songs[0].al.picUrl
-      } catch (error) {
-        MessageBack.normalBack('warning', "歌曲封面获取失败!")
         return error
       }
     },
     async getMusicList (keyword) {
       if (keyword)
         try {
-          const res = await AxiosBack.searchMusic(keyword, Date.now())
+          const res = await AxiosBack.searchMusic(keyword)
           this.musicList = res.data.result.songs
           MessageBack.normalBack('success', "搜索成功")
         } catch (error) {

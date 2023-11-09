@@ -32,22 +32,6 @@ export default {
       this.isRouterAlive = false
       this.$nextTick(() => { this.isRouterAlive = true })
     },
-    // playMusic (data) {
-    //   if (data) {
-    //     this.$refs.music.play()
-    //     this.$refs.music.volume = 0.1
-    //   } else {
-    //     this.$refs.music.pause()
-    //   }
-    // },
-  },
-  mounted () {
-    // getSentence().then((result) => {
-    //   const { hitokoto } = result.data
-    //   this.$store.commit('SentenceAbout/setSentence', hitokoto)
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
   },
 }
 </script>

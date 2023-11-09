@@ -11,7 +11,6 @@ const MusciAxiosInterceptor = axios.create({
 MusciAxiosInterceptor.interceptors.request.use(
   config => {
     nProgress.start()
-    // config.headers.Authorization = 'Access - Control - Allow - Origin'
     return config
   },
   error => {

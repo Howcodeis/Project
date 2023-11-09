@@ -1,3 +1,4 @@
+import { AxiosHeaders } from 'axios'
 import AxiosInterceptor from '../Interceptors/AxiosInterceptor'
 import MusciAxiosInterceptor from '../Interceptors/MusicAxiosInterceptor'
 
@@ -104,10 +105,10 @@ export const AxiosBack = {
    * @param {object} keyword 
    * @returns {Promise}
    */
-  searchMusic (keyword, timestamp) {
+  searchMusic (keyword) {
     return MusciAxiosInterceptor({
       method: 'get',
-      url: `/search?keywords=${keyword}&timestamp=${timestamp}`
+      url: `/search?keywords=${keyword}`
     })
   },
 
@@ -116,10 +117,10 @@ export const AxiosBack = {
    * @param {number} id 
    * @returns {Promise}
    */
-  getSongUrl (id, timestamp) {
+  getSongUrl (id) {
     return MusciAxiosInterceptor({
       method: 'get',
-      url: `/song/url/v1?id=${id}&level=standard&timestamp=${timestamp}`
+      url: `/song/url/v1?id=${id}&level=standard`
     })
   },
 
@@ -129,10 +130,10 @@ export const AxiosBack = {
    * @param {number} timestamp 
    * @returns {Promise}
    */
-  getSongLrc (id, timestamp) {
+  getSongLrc (id) {
     return MusciAxiosInterceptor({
       method: 'get',
-      url: `/lyric?id=${id}&timestamp=${timestamp}`
+      url: `/lyric?id=${id}`,
     })
   },
 
@@ -142,10 +143,10 @@ export const AxiosBack = {
    * @param {number} timestamp 
    * @returns {Promise}
    */
-  getSongDetail (id, timestamp) {
+  getSongDetail (id) {
     return MusciAxiosInterceptor({
       method: 'get',
-      url: `/song/detail?ids=${id}&timestamp=${timestamp}`
+      url: `/song/detail?ids=${id}`
     })
   }
 }
