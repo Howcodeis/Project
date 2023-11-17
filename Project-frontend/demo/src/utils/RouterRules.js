@@ -17,7 +17,7 @@ const whiteList = ['todolist', 'main']
 // 拦截
 router.beforeEach((to, from, next) => {
   const { permissionsId, token } = JSON.parse(localStorage.getItem('userinfo-save')) || ''
-  NProgress.start()
+  // NProgress.start()
   // hastoken
   if (token) {
     next()
@@ -35,10 +35,10 @@ router.beforeEach((to, from, next) => {
       })
     }
   }
-  NProgress.done()
+  // NProgress.done()
 })
 router.afterEach(() => {
-  NProgress.done()
+  // NProgress.done()
 })
 
 export default router

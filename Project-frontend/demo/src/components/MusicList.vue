@@ -1,20 +1,23 @@
 <template>
   <div class="music-box">
     <!-- 关闭musicList -->
-    <div class="close-musicBox" @click="closeMusicBox(false)"></div>
+    <div class="close-musicBox" @click="closeMusicBox(false)">
+      <i class="iconfont icon-zuojiantou"></i>
+    </div>
 
+
+    <!-- 歌曲独奏页面 -->
     <transition name="details">
-
-      <div class="music-details" v-show="musicState.isShowDetails">
+      <div class="music-details" v-show="isShowDetails">
         <div class="big-image">
           <div class="img-details">
-            <img :src="musicState.currentMusicImg || '默认图片路径'">
+            <img :src="musicImg || '默认图片路径'">
           </div>
         </div>
         <div class="big-lrc">
           <ul class="big-lrcDetails" ref="bigLrcUl" @scroll="artificiallyScroll($event)">
-            <li v-for="(lrc, index) in  musicState.currentSongLrc " :key="index" ref="lrcLi" @dblclick="skipLrc(lrc)">
-              <span :class="[musicState.currentLrcIndex === index ? 'highLight' : '']">
+            <li v-for="(lrc, index) in  formatLrc " :key="index" ref="lrcLi" @dblclick="skipLrc(lrc)">
+              <span :class="[currentLrcIndex === index ? 'highLight' : '']">
                 {{ lrc.words ? lrc.words : '\xa0' }}
               </span>
             </li>
@@ -23,86 +26,83 @@
       </div>
     </transition>
 
-
+    <!-- 歌单自定义，发现音乐 -->
     <div class="client-container"></div>
 
-
+    <!-- 音乐展示界面 -->
     <div class="music-container">
       <div class="search-bar">
         <el-input type="text" v-model="keyword" @keydown.native.enter="getMusicList(keyword)">
         </el-input>
         <el-button circle icon="el-icon-search" @click="getMusicList(keyword)"></el-button>
       </div>
-      <ul class="song-ul">
-        <li v-for="single in musicState.currentMusicList" @dblclick="getSongUrl(single)" :key="single.id">{{ single.name
-        }} -- {{
-  single.artists[0].name }}</li>
-      </ul>
-
+      <PlayListPage :handlerPlaySong="handlerPlaySong"></PlayListPage>
     </div>
 
     <div class="control-bar">
       <div class="song-img">
-        <div class="img-set" @click="musicState.isShowDetails = !musicState.isShowDetails">
-          <img :src="musicState.currentMusicImg || '默认图片路劲'">
+        <div class="img-set" @click="handlerSmallBigLrc">
+          <img :src="musicImg || '默认图片路劲'">
+          <div class="up-img">
+            <i class="iconfont icon-xiangshangjiantou" v-show="!isShowDetails"></i>
+            <i class="iconfont icon-xiangxiajiantou" v-show="isShowDetails"></i>
+          </div>
         </div>
         <div class="song-name">
           <div class="name-space">
-            <span>{{ musicState.currentSong.name || '暂无歌曲' }}</span>
+            <span>{{ currentSong.name || '暂无歌曲' }}</span>
           </div>
           <div class="artist-space">
-            <span>{{ musicState.currentSong.artists?.[0].name || '暂无歌手' }}</span>
+            <span>{{ currentSong.artists?.[0].name || '暂无歌手' }}</span>
           </div>
         </div>
       </div>
       <div class="progress-control">
         <div class="song-control">
           <div class="normal-set">
-            <i class="iconfont icon-suijibofang" @click="changeStatus" v-show="musicState.status == 3" title="随机播放" />
-            <i class="iconfont icon-danquxunhuan" @click="changeStatus" v-show="musicState.status == 2" title="单曲循环" />
-            <i class="iconfont icon-danqubofang" @click="changeStatus" v-show="musicState.status == 1" title="列表循环" />
+            <i class="iconfont icon-suijibofang" @click="changeStatus" v-show="status == 3" title="随机播放" />
+            <i class="iconfont icon-danquxunhuan" @click="changeStatus" v-show="status == 2" title="单曲循环" />
+            <i class="iconfont icon-liebiaoxunhuan" @click="changeStatus" v-show="status == 1" title="列表循环" />
             <i class="iconfont icon-zuobofang" @click="handleBefore" title="上一首" />
-            <i class="iconfont icon-tingzhi" v-show="musicState.isPlay" @click="handlePlay" title="暂停" />
-            <i class="iconfont icon-bofang" v-show="!musicState.isPlay" @click="handlePlay" title="播放" />
+            <i class="iconfont icon-tingzhi" v-show="isPlay" @click="playORpause" title="暂停" />
+            <i class="iconfont icon-bofang" v-show="!isPlay" @click="playORpause" title="播放" />
             <i class="iconfont icon-youbofang" title="下一首" @click="handleNext" />
           </div>
 
           <div class="volume-control" @mouseenter="isShowVolume = true" @mouseleave="isShowVolume = false">
-            <i class="iconfont icon-yinliang" v-show="musicState.isvolume" @click="stepCloseVolume" />
-            <i class="iconfont icon-guanbiyinliang" v-show="!musicState.isvolume" @click="stepOpenVolume" />
+            <i class="iconfont icon-yinliang" v-show="isvolume" @click="stepCloseVolume" />
+            <i class="iconfont icon-guanbiyinliang" v-show="!isvolume" @click="stepOpenVolume" />
             <!-- <el-slider v-show="isShowVolume" v-model="value" vertical height="50px">
             </el-slider> -->
             <input class="volume-set" type="range" v-show="isShowVolume" min="0" max="1" step="0.01"
-              :title="musicState.currentSong ? musicState.volumeValue : '暂无歌曲'" v-model="musicState.volumeValue">
+              :title="currentSong ? volumeValue : '暂无歌曲'" v-model="volumeValue">
           </div>
         </div>
         <!-- 进度条包裹 -->
         <div class="progress-bar">
           <!-- 进度条 -->
           <div class="music-bar">
-            <div class="c-time"><span>{{ musicState.fakeTime || '00:00' }}</span></div>
+            <div class="c-time"><span>{{ fakeTime || '00:00' }}</span></div>
             <input type="range" class="show-bar" @change="touchProgress" @input="changeProgress" min="0" max="100"
-              v-model="musicState.percent" step="0.01">
-            <div class="d-time"><span>{{ totalTime || '00:00' }}</span></div>
+              v-model="percent" step="0.01">
+            <div class="d-time"><span>{{ getTotalTime || '00:00' }}</span></div>
           </div>
           <!-- 迷你歌词 -->
-          <transition name="small">
-            <div class="small-lrc" v-show="!musicState.isShowDetails">
-              <ul class="lrc-ul" ref="smallLrcUl">
-                <li v-for="(lrc, index) in  musicState.currentSongLrc " :key="index">
-                  <span>
-                    {{ lrc.words ? lrc.words : '\xa0' }}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </transition>
+          <div :class="[isShowDetails ? 'small-lrc-change' : 'small-lrc']">
+            <ul class="lrc-ul" ref="smallLrcUl">
+              <li v-for="(lrc, index) in  formatLrc " :key="index">
+                <span>
+                  {{ lrc.words ? lrc.words : '\xa0' }}
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
 
       </div>
       <div class="song-collection"></div>
-      <audio id="music" ref="audioControls" autoplay :src="musicState.musicUrl" @timeupdate="findCurrentLrc"
-        @canplay="canplay" @ended="playNext(musicState.status)"></audio>
+      <audio id="music" ref="audioControls" preload autoplay :src="musicUrl" @timeupdate="findCurrentLrc"
+        @canplay="canplay" @ended="playNext(status)"></audio>
     </div>
   </div>
 </template>
@@ -121,12 +121,14 @@
  * 7.歌曲播放可以缓存下来。下次播放无需再次发请求
  */
 import { mapActions } from 'pinia'
-import { mapState } from 'pinia'
-import musicPlayStore from '../store'
+import { mapWritableState } from 'pinia'
+import musicPlayStore from '../store/musicSetting'
+import PlayListPage from '../layout/PlayListPage.vue'
 export default {
   name: 'myMusic',
   inject: ['childrenRouterRefresh'],
   props: { closeMusicBox: Function },
+  components: { PlayListPage },
   data () {
     return {
       // 搜索关键字
@@ -141,205 +143,186 @@ export default {
       isProgressMove: false,
       // 音量条显示
       isShowVolume: false,
-      musicState: {
-        // 当前歌词索引  高亮显示判断
-        currentLrcIndex: '',
-        // 按钮状态值
-        status: 1,
-        // 音量数字
-        volumeValue: 0.5,
-        // 上次的音量数字
-        beforeVolumeValue: '',
-        // 音量状态值
-        isvolume: true,
-        // 进度条百分比
-        percent: 0,
-        // 歌词详情页面展示
-        isShowDetails: false,
-        // 假时间
-        fakeTime: '',
-        // 是否播放
-        isPlay: false,
-        // 当前播放时间
-        currentTime: '',
-        // 当前播放列表
-        currentMusicList: this.musicList || [],
-        // 当前歌曲
-        currentSong: '',
-        // 当前歌词
-        currentSongLrc: '',
-        // 当前封面
-        currentMusicImg: '',
-        musicUrl: '',
-      }
-
+      // 上次的音量数字
+      beforeVolumeValue: '',
+      // 音量状态值
+      isvolume: true,
     }
   },
   computed: {
-    ...mapState(musicPlayStore, {
+    ...mapWritableState(musicPlayStore, {
       musicUrl: 'musicUrl',
       formatLrc: 'formatLrc',
       musicImg: 'musicImg',
       currentSong: 'currentSong',
       musicList: 'musicList',
+      currentSongIndex: 'currentSongIndex',
+      currentLrcIndex: 'currentLrcIndex',
+      currentTime: 'currentTime',
+      percent: 'percent',
+      fakeTime: 'fakeTime',
+      totalTime: 'totalTime',
+      volumeValue: 'volumeValue',
+      status: 'status',
+      isShowDetails: 'isShowDetails',
+      isPlay: 'isPlay'
     }),
-    totalTime () {
-      if (this.musicState.currentSong)
-        return this.timeFormat((this.musicState.currentSong.duration / 1000))
+    getTotalTime () {
+      if (this.currentSong)
+        return this.timeFormat((this.currentSong.duration / 1000))
       else return '00:00'
     },
-    currentSongIndex () {
-      if (this.musicState.currentSong)
-        return this.musicList.findIndex(item => item.id == this.musicState.currentSong.id)
-      else return ''
-    },
-    percentTime () {
-      return Math.floor((this.musicState.currentSong.duration / 1000 * (this.musicState.percent / 100)))
-    },
+
   },
   methods: {
     ...mapActions(musicPlayStore, {
-      getSongUrl: 'getSongUrl',
-      getMusicList: 'getMusicList'
+      getMusicList: 'getMusicList',
+      timeFormat: 'timeFormat',
+      getSongDetail: 'getSongDetail',
+      getSongLrc: 'getSongLrc'
     }),
 
+    handlerPlaySong (single) {
+      if (this.currentSong == single) {
+        this.$refs.audioControls.currentTime = 0
+      }
+      else {
+        this.getSongDetail(single)
+      }
+    },
+
     canplay () {
-      if (this.musicState.isPlay)
+      if (this.isPlay)
         this.$refs.audioControls.play()
       else this.$refs.audioControls.pause()
     },
-    // 歌词时长跟踪
-    timeFormat (time) {
-      let minute = Math.floor(time / 60)
-      let second = Math.floor(time) - minute * 60
-      if (minute <= 9) minute = "0" + minute
-      if (second <= 9) second = "0" + second
-      return minute + ":" + second
+    percentTime () {
+      return Math.floor((this.currentSong.duration / 1000 * (this.percent / 100)))
     },
     // 当前时间分为 假时间 和 真时间 拖动进度条的时候动假时间  拖动完毕才修改真时间  假时间通过歌曲总时间(秒) / 进度条百分比
     // 拖动完毕执行
     touchProgress () {
-      this.$refs.audioControls.currentTime = this.percentTime
+      this.$refs.audioControls.currentTime = this.percentTime()
       this.isProgressMove = false
     },
     // 拖动过程执行
     changeProgress () {
       if (this.currentSong) {
         this.isProgressMove = true
-        this.musicState.fakeTime = this.timeFormat(this.percentTime)
+        this.fakeTime = this.timeFormat(this.percentTime())
       } else {
-        return this.musicState.fakeTime = "00:00"
+        return this.fakeTime = "00:00"
       }
-
+    },
+    handlerSmallBigLrc () {
+      this.isShowDetails = !this.isShowDetails
     },
     randomPlayId () {
-      return Math.floor(Math.random() * (this.musicState.currentMusicList.length + 1))
+      return Math.floor(Math.random() * (this.musicList.length + 1))
     },
     changeStatus () {
       // 列表循环
-      if (this.musicState.status == 1) {
-        this.musicState.status = 2
+      if (this.status == 1) {
+        this.status = 2
         // 单曲循环
-      } else if (this.musicState.status == 2) {
-        this.musicState.status = 3
+      } else if (this.status == 2) {
+        this.status = 3
         // 随机播放
       } else {
-        this.musicState.status = 1
+        this.status = 1
       }
     },
     handleBefore () {
-      if (this.musicState.status == 1) {
+      if (this.status == 1) {
         if (this.currentSongIndex === 0) {
-          this.currentSongIndex = this.musicState.currentMusicList.length - 1
-          const beforeSong = this.musicList[this.currentSongIndex]
-          this.getSongUrl(beforeSong)
+          let beforeSongIndex = this.musicList.length - 1,
+            beforeSong = this.musicList[beforeSongIndex]
+          this.getSongDetail(beforeSong)
         } else {
-          const beforeSong = this.musicList[this.currentSongIndex - 1]
-          this.getSongUrl(beforeSong)
+          let beforeSong = this.musicList[this.currentSongIndex - 1]
+          this.getSongDetail(beforeSong)
         }
-      } else if (this.musicState.status == 2) {
+      } else if (this.status == 2) {
         this.$refs.audioControls.currentTime = 0
       } else {
-        this.getSongUrl(this.musicList[this.randomPlayId()])
+        this.getSongDetail(this.musicList[this.randomPlayId()])
       }
 
     },
     handleNext () {
-      if (this.musicState.status == 1) {
-        if (this.currentSongIndex === this.musicState.currentMusicList.length - 1) {
-          this.currentSongIndex = 0
-          const NextSong = this.musicList[this.currentSongIndex]
-          this.getSongUrl(NextSong)
+      if (this.status == 1) {
+        if (this.currentSongIndex === this.musicList.length - 1) {
+          let afterCurrentSongIndex = 0,
+            NextSong = this.musicList[afterCurrentSongIndex]
+          this.getSongDetail(NextSong)
         } else {
-          const NextSong = this.musicList[this.currentSongIndex + 1]
-          this.getSongUrl(NextSong)
+          let NextSong = this.musicList[this.currentSongIndex + 1]
+          this.getSongDetail(NextSong)
         }
-      } else if (this.musicState.status == 2) {
+      } else if (this.status == 2) {
         this.$refs.audioControls.currentTime = 0
       } else {
-        this.getSongUrl(this.musicList[this.randomPlayId()])
+        this.getSongDetail(this.musicList[this.randomPlayId()])
       }
     },
-    handlePlay () {
-      if (this.musicState.isPlay) {
-        this.musicState.isPlay = false
+    playORpause () {
+      if (this.isPlay) {
+        this.isPlay = false
         this.$refs.audioControls.pause()
       } else {
-        this.musicState.isPlay = true
+        this.isPlay = true
         this.$refs.audioControls.play()
       }
     },
     stepCloseVolume () {
-      this.musicState.beforeVolumeValue = this.musicState.volumeValue
-      this.musicState.volumeValue = 0
+      this.beforeVolumeValue = this.volumeValue
+      this.volumeValue = 0
     },
     stepOpenVolume () {
-      if (this.musicState.beforeVolumeValue == 0) {
-        this.musicState.volumeValue = 0.5
+      if (this.beforeVolumeValue == 0) {
+        this.volumeValue = 0.5
       } else {
-        this.musicState.volumeValue = this.musicState.beforeVolumeValue
+        this.volumeValue = this.beforeVolumeValue
       }
     },
-    // 根据当前播放时间 查找当前歌词索引
     findCurrentLrcIndex () {
-      for (let i = 0; i < this.musicState.currentSongLrc.length; i++) {
-        if (this.$refs.audioControls.currentTime < this.musicState.currentSongLrc[i].time) {
+      for (let i = 0; i < this.formatLrc.length; i++) {
+        if (this.$refs.audioControls.currentTime < this.formatLrc[i].time) {
           return i - 1
         }
       }
-      return this.musicState.currentSongLrc.length - 2
+      return this.formatLrc.length - 2
     },
     // 根据当前播放时间查找当前歌词 计算偏移量
     findCurrentLrc () {
-      this.musicState.currentLrcIndex = this.findCurrentLrcIndex()
+      this.currentTime = this.$refs.audioControls.currentTime
+      this.currentLrcIndex = this.findCurrentLrcIndex()
       if (!this.isProgressMove) {
-        this.musicState.percent = Math.floor((this.$refs.audioControls.currentTime / (this.musicState.currentSong.duration / 1000)) * 10000) / 100
-        this.musicState.fakeTime = this.timeFormat(this.$refs.audioControls.currentTime)
+        this.percent = Math.floor((this.$refs.audioControls.currentTime / (this.currentSong.duration / 1000)) * 10000) / 100
+        this.fakeTime = this.timeFormat(this.$refs.audioControls.currentTime)
       }
-      if (this.musicState.isShowDetails) {
-        this.offset = this.$refs.bigLrcUl.children[0].clientHeight * this.musicState.currentLrcIndex
+      if (this.isShowDetails) {
+        this.offset = this.$refs.bigLrcUl.children[0].clientHeight * this.currentLrcIndex
         if (this.lrcCanMove)
           this.$refs.bigLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
       } else {
-        this.offset = this.$refs.smallLrcUl.children[0].clientHeight * this.musicState.currentLrcIndex
+        this.offset = this.$refs.smallLrcUl.children[0].clientHeight * this.currentLrcIndex
         this.$refs.smallLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
       }
-      this.musicState.currentTime = this.$refs.audioControls.currentTime
-
     },
     // 播放完  切换下一首
     playNext (val) {
       // playStyle(val)
       // 列表循环
       if (val == 1) {
-        this.timeOutbar(this.getSongUrl(this.musicList[this.currentSongIndex + 1]), 1000)
+        this.timeOutbar(this.getSongDetail(this.musicList[this.currentSongIndex + 1]), 1000)
         // 单曲循环
       } else if (val == 2) {
         this.$refs.audioControls.currentTime = 0
         this.$refs.audioControls.play()
         // 随机播放
       } else {
-        this.timeOutbar(this.getSongUrl(this.musicList[this.randomPlayId()]), 1000)
+        this.timeOutbar(this.getSongDetail(this.musicList[this.randomPlayId()]), 1000)
       }
     },
     timeOutbar (Object, time) {
@@ -364,46 +347,25 @@ export default {
     },
   },
   watch: {
-    'musicState.volumeValue': {
+    volumeValue: {
       handler () {
-        this.musicState.volumeValue == 0 ? this.musicState.isvolume = false : this.musicState.isvolume = true
-        this.$refs.audioControls.volume = this.musicState.volumeValue
-      }
-    },
-    musicState: {
-      deep: true,
-      handler () {
-        localStorage.setItem('music-state', JSON.stringify(this.musicState))
-      }
-    },
-    musicList: {
-      handler () {
-        this.musicState.currentMusicList = this.musicList
+        this.volumeValue == 0 ? this.isvolume = false : this.isvolume = true
+        this.$refs.audioControls.volume = this.volumeValue
       }
     },
     currentSong: {
       handler () {
-        this.musicState.isPlay = true
-        this.musicState.currentSong = this.currentSong
-        this.musicState.musicUrl = this.musicUrl
-
-      }
-    },
-    formatLrc: {
-      handler () {
-        this.musicState.currentSongLrc = this.formatLrc
-      }
-    },
-    musicImg: {
-      handler () {
-        this.musicState.currentMusicImg = this.musicImg
+        this.$refs.audioControls.currentTime = 0
+        this.isPlay = true
       }
     }
   },
   mounted () {
-    this.musicState = JSON.parse(localStorage.getItem('music-state')) || this.musicState
-    this.$refs.audioControls.currentTime = this.musicState.currentTime
-    if (this.musicState.isPlay) this.musicState.isPlay = false
+    if (this.isPlay) this.isPlay = false
+    // else if (this.musicImg) this.getSongDetail(this.currentSong)
+    else if (this.originLyric) this.getSongLrc(this.currentSong)
+    this.$refs.audioControls.currentTime = this.currentTime
+    this.$refs.audioControls.volume = this.volumeValue
   },
 }
 </script>
@@ -415,7 +377,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 66;
-  background: rgb(54, 54, 59);
+  background: var(--white-gray);
 }
 
 .client-container {
@@ -427,7 +389,7 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-color: rgb(29, 29, 29);
+  background-color: var(--white-gray);
 }
 
 .close-musicBox {
@@ -435,9 +397,17 @@ export default {
   z-index: 1;
   top: 10px;
   right: 10px;
-  width: 20px;
-  height: 20px;
-  background: #000;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & i {
+    font-size: 30px;
+    color: #ffffff;
+  }
 }
 
 
@@ -447,7 +417,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 67;
-  background-color: rgb(29, 29, 29);
+  background: var(--deep-blue);
   background-size: cover;
 
   .close-musicDetails {
@@ -467,8 +437,7 @@ export default {
     width: 45%;
     height: 80%;
     overflow: scroll;
-    background: rgb(43, 43, 43);
-    color: #ffffff;
+    color: rgb(76, 76, 76);
 
     &::-webkit-scrollbar {
       width: 0;
@@ -540,6 +509,7 @@ export default {
   height: 90%;
   top: 0;
   right: 0;
+  overflow: scroll;
 
   .search-bar {
     position: absolute;
@@ -571,30 +541,12 @@ export default {
       border: none;
     }
   }
-
-  .song-ul {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 90%;
-    user-select: none;
-    text-align: center;
-    overflow: scroll;
-
-    & li {
-      line-height: 60px;
-    }
-
-    &::-webkit-scrollbar {
-      width: 0
-    }
-  }
 }
 
 
 .highLight {
   transform: scale(1.1);
-  color: rgb(0, 0, 0);
+  color: #ffffff;
 }
 
 .control-bar {
@@ -603,24 +555,63 @@ export default {
   z-index: 67;
   width: 100%;
   height: 10%;
+  min-height: 100px;
   display: flex;
   justify-content: space-between;
-  background-color: rgb(29, 29, 29);
+  background-color: var(--white-gray);
 
   .song-img {
-    flex: 1;
-    position: relative;
-    left: 2%;
-    width: 40%;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
     user-select: none;
 
     .img-set {
-      width: 15%;
-      height: 90%;
+      position: relative;
+      margin: 0 10px 0 20px;
+      min-width: 100px;
+      width: 35%;
+      height: 95%;
       cursor: pointer;
+
+      .up-img {
+        position: absolute;
+        z-index: 68;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: scale(0);
+        transition: all .4s;
+
+        & i {
+          font-size: 50px;
+          color: rgb(255, 255, 255);
+        }
+
+      }
+
+      &:hover .up-img {
+        transform: scale(1);
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transition: all 0.4s;
+      }
+
+      &:hover::after {
+        backdrop-filter: blur(1px);
+      }
 
       & img:not([src]) {
         opacity: 0;
@@ -636,12 +627,13 @@ export default {
     .song-name {
       width: 86%;
       height: 100%;
-      color: rgb(166, 166, 166);
+      color: #ffff;
 
       .name-space {
+        position: relative;
         width: 100%;
         height: 50%;
-        margin-left: 5px;
+        margin-left: 10px;
         white-space: nowrap;
         overflow: hidden;
         font-size: 1.1em;
@@ -652,7 +644,7 @@ export default {
       .artist-space {
         width: 100%;
         height: 50%;
-        margin-left: 5px;
+        margin-left: 10px;
         white-space: nowrap;
         overflow: hidden;
         font-size: 0.9em;
@@ -665,32 +657,24 @@ export default {
   }
 
   .song-collection {
-    width: 30%;
-    flex: 1;
+    width: 20%;
   }
 
   .progress-control {
-    flex: 1.5;
+    width: 60%;
     display: flex;
-    width: 40%;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: rgb(166, 166, 166);
+    color: #ffffff;
 
     .song-control {
-      position: relative;
       width: 100%;
       height: 40%;
       display: flex;
       justify-content: center;
 
+      .volume-control,
       .normal-set {
-        display: flex;
-        align-items: center;
-      }
-
-      .volume-control {
         position: relative;
         display: flex;
         align-items: center;
@@ -727,8 +711,7 @@ export default {
     }
 
     .progress-bar {
-      position: relative;
-      width: 100%;
+      width: 80%;
       height: 60%;
       display: flex;
       flex-direction: column;
@@ -737,13 +720,15 @@ export default {
       user-select: none;
 
       .music-bar {
-        flex: 1;
+        flex-grow: 1;
         width: 80%;
         height: 1.2em;
         display: flex;
         align-items: center;
+        transition: flex 0.4s;
 
         .show-bar {
+          min-width: 100px;
           width: 100%;
           height: 0.4em;
           border-radius: 25px;
@@ -757,17 +742,42 @@ export default {
       }
 
       .small-lrc {
-        flex: 1;
-        width: 80%;
+        flex-grow: 1;
+        width: 100%;
         height: 1.2em;
+        display: flex;
+        justify-content: center;
+        transition: flex .4s;
         text-align: center;
 
         .lrc-ul {
+          color: #ffffff;
           font-size: 0.6em;
           line-height: 20px;
           height: 20px;
           transition: all .5s;
           white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+
+      .small-lrc-change {
+        flex-grow: 0;
+        width: 80%;
+        height: 1.2em;
+        display: flex;
+        justify-content: center;
+        transition: flex .4s;
+        text-align: center;
+
+        .lrc-ul {
+          opacity: 0;
+          font-size: 0.6em;
+          line-height: 20px;
+          height: 20px;
+          transition: all .5s;
+          white-space: nowrap;
+          transition: all .4s;
           overflow: hidden;
         }
       }
@@ -783,16 +793,6 @@ export default {
 .details-enter,
 .details-leave-to {
   transform: translatey(500px);
-  opacity: 0;
-}
-
-.small-enter-active,
-.small-leave-active {
-  transition: all .6s;
-}
-
-.small-enter,
-.small-leave-to {
   opacity: 0;
 }
 </style>

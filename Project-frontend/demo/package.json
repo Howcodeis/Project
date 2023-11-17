@@ -15,11 +15,11 @@
     "vite-plugin-vue2": "^2.0.3"
   },
   "dependencies": {
-    "@vue/runtime-dom": "^3.3.4",
     "axios": "^1.5.1",
     "element-ui": "^2.15.14",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.0",
     "vue": "^2.7.0",
     "vue-router": "^3.6.5",
     "vue-template-compiler": "^2.7.15",

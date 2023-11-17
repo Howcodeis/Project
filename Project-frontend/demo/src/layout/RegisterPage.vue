@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { AxiosBack } from '@/utils/AxiosBack';
+import { AxiosBack } from '@/api/requestUser';
 import { MessageBack } from '@/utils/MessageBack';
 export default {
   name: "MyRegister",

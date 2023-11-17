@@ -9,6 +9,7 @@ import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
 import './assets/iconfont/iconfont' // 引入iconfont.js
 import { createPinia, PiniaVuePlugin } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 Vue.prototype.NProgress = NProgress
 Vue.use(ElementUI)
@@ -16,6 +17,7 @@ Vue.use(VueRouter)
 Vue.use(PreventReClick)
 Vue.use(PiniaVuePlugin)
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 Vue.config.productionTip = false
 

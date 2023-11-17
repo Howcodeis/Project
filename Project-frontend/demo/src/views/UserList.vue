@@ -9,7 +9,7 @@
       <div class="search-input">
         <el-input v-model="searchName" placeholder="请输入查询名" clearable />
         <el-select v-model="searchPermissionsName" clearable placeholder="请选择权限名">
-          <el-option v-for="p in form.allPermissions" :key="p.index" :value="p.permissionsName"></el-option>
+          <el-option v-for="p in form.allPermissions" :key="p.id" :value="p.permissionsName"></el-option>
         </el-select>
       </div>
       <!-- table -->
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="权限" :label-width="formLabelWidth">
           <el-select v-model="form.rowUser.permissionsName" placeholder="请选择更改权限">
-            <el-option v-for=" p  in  form.allPermissions " :key="p.index" :value="p.permissionsName"></el-option>
+            <el-option v-for=" p  in  form.allPermissions " :key="p.id" :value="p.permissionsName"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { AxiosBack } from '@/utils/AxiosBack';
+import { AxiosBack } from '@/api/requestUser';
 import { MessageBack } from '@/utils/MessageBack'
 export default {
   name: "MyUserinfo",

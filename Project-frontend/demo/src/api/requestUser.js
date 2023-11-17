@@ -1,10 +1,7 @@
 import { AxiosHeaders } from 'axios'
 import AxiosInterceptor from '../Interceptors/AxiosInterceptor'
-import MusciAxiosInterceptor from '../Interceptors/MusicAxiosInterceptor'
-
 
 export const AxiosBack = {
-
   /**
    * 登录反馈
    * @param {string} username 
@@ -99,56 +96,6 @@ export const AxiosBack = {
       }
     })
   },
-
-  /**
-   * 搜索歌曲
-   * @param {object} keyword 
-   * @returns {Promise}
-   */
-  searchMusic (keyword) {
-    return MusciAxiosInterceptor({
-      method: 'get',
-      url: `/search?keywords=${keyword}`
-    })
-  },
-
-  /**
-   * 获取歌曲
-   * @param {number} id 
-   * @returns {Promise}
-   */
-  getSongUrl (id) {
-    return MusciAxiosInterceptor({
-      method: 'get',
-      url: `/song/url/v1?id=${id}&level=standard`
-    })
-  },
-
-  /**
-   * 获取歌曲歌词
-   * @param {number} id 
-   * @param {number} timestamp 
-   * @returns {Promise}
-   */
-  getSongLrc (id) {
-    return MusciAxiosInterceptor({
-      method: 'get',
-      url: `/lyric?id=${id}`,
-    })
-  },
-
-  /**
-   * 获取歌曲详情
-   * @param {number} id 
-   * @param {number} timestamp 
-   * @returns {Promise}
-   */
-  getSongDetail (id) {
-    return MusciAxiosInterceptor({
-      method: 'get',
-      url: `/song/detail?ids=${id}`
-    })
-  }
 }
 
 

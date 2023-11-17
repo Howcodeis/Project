@@ -39,6 +39,11 @@ export default {
 <style>
 @import url("./assets/iconfont/iconfont.css");
 
+:root {
+  --white-gray: linear-gradient(to top, #6a85b6 0%, #bac8e0 100%);
+  --deep-blue: linear-gradient(to top, #a3bded 0%, #6991c7 100%);
+}
+
 * {
   padding: 0;
   margin: 0;

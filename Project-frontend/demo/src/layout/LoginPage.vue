@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { AxiosBack } from '@/utils/AxiosBack'
+import { AxiosBack } from '@/api/requestUser'
 import { setUserData, setItem } from '@/utils/setUserInfo'
 import { MessageBack } from '@/utils/MessageBack'
 export default {
