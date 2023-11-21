@@ -1,78 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>爱心</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
-<style>
-  * {
-    padding: 0;
-    margin: 0;
-  }
-
-
-  div {
-    background: #e0d4d4;
-    padding-top: 120px;
-    width: 260px;
-    height: 260px;
-    overflow: scroll;
-    transition: all .8s;
-
-    & p {
-      line-height: 60px;
-      height: 60px;
-      background: #a87b7b;
-      transition: all .8s;
-    }
-
-  }
-</style>
-
 <body>
-  <div id="ddd">
-    <p>1</p>
-    <p>2</p>
-    <p>3</p>
-    <p>4</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-    <p>xxx</p>
-  </div>
+  <div class="heart"></div>
 </body>
 
 </html>
-<script>
-  const div = document.querySelector('#ddd')
-  const p = document.querySelector('p')
-  let pheight = p.clientHeight
-  function setScrollTop (pheight) {
-    div.scrollTo({ top: pheight, behavior: 'smooth' })
-  }
-
-  // setInterval(() => {
-  //   pheight
-  //   setScrollTop(pheight)
-  //   pheight = pheight + 60
-  // }, 2000);
-
-</script>

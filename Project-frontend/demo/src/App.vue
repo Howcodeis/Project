@@ -9,7 +9,7 @@
 
 <script>
 // import { getSentence } from '@/utils/FamousSentence'
-import HomePage from './components/HomePage.vue'
+import HomePage from './components/Home/Home.vue'
 export default {
   name: 'App',
   provide () {
@@ -19,12 +19,8 @@ export default {
   },
   components: { HomePage },
   data () {
-    const musicList = () => {
-      return new URL('@/assets/music/Self Love.wav', import.meta.url).href
-    }
     return {
       isRouterAlive: true,
-      musicList,
     }
   },
   methods: {

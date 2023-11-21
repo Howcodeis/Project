@@ -21,8 +21,10 @@ MusciAxiosInterceptor.interceptors.request.use(
 
 MusciAxiosInterceptor.interceptors.response.use(
   response => {
-    nProgress.done()
-    return Promise.resolve(response)
+    if (response.status == 200) {
+      nProgress.done()
+      return Promise.resolve(response.data)
+    }
   },
   error => {
     nProgress.done()

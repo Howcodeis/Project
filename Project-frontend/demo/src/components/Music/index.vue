@@ -16,9 +16,9 @@
         </div>
         <div class="big-lrc">
           <ul class="big-lrcDetails" ref="bigLrcUl" @scroll="artificiallyScroll($event)">
-            <li v-for="(lrc, index) in  formatLrc " :key="index" ref="lrcLi" @dblclick="skipLrc(lrc)">
+            <li v-for="(item, index) in  originLyric " :key="index" ref="lrcLi" @dblclick="skipLrc(item)">
               <span :class="[currentLrcIndex === index ? 'highLight' : '']">
-                {{ lrc.words ? lrc.words : '\xa0' }}
+                {{ item.word ? item.word : '\xa0' }}
               </span>
             </li>
           </ul>
@@ -27,16 +27,18 @@
     </transition>
 
     <!-- 歌单自定义，发现音乐 -->
-    <div class="client-container"></div>
+    <div class="client-container">
+      <ClientPage />
+    </div>
 
     <!-- 音乐展示界面 -->
     <div class="music-container">
       <div class="search-bar">
-        <el-input type="text" v-model="keyword" @keydown.native.enter="getMusicList(keyword)">
+        <el-input type="text" v-model="keyword" @keydown.native.enter="setMusicList(keyword)">
         </el-input>
-        <el-button circle icon="el-icon-search" @click="getMusicList(keyword)"></el-button>
+        <el-button circle icon="el-icon-search" @click="setMusicList(keyword)"></el-button>
       </div>
-      <PlayListPage :handlerPlaySong="handlerPlaySong"></PlayListPage>
+      <MusicListPage :handlerPlaySong="handlerPlaySong"></MusicListPage>
     </div>
 
     <div class="control-bar">
@@ -90,9 +92,9 @@
           <!-- 迷你歌词 -->
           <div :class="[isShowDetails ? 'small-lrc-change' : 'small-lrc']">
             <ul class="lrc-ul" ref="smallLrcUl">
-              <li v-for="(lrc, index) in  formatLrc " :key="index">
+              <li v-for="(item, index) in  originLyric " :key="index">
                 <span>
-                  {{ lrc.words ? lrc.words : '\xa0' }}
+                  {{ item.word ? item.word : '\xa0' }}
                 </span>
               </li>
             </ul>
@@ -122,13 +124,14 @@
  */
 import { mapActions } from 'pinia'
 import { mapWritableState } from 'pinia'
-import musicPlayStore from '../store/musicSetting'
-import PlayListPage from '../layout/PlayListPage.vue'
+import musicPlayStore from '@/store/musicSetting'
+import MusicListPage from './musicList/MusicList.vue'
+import ClientPage from './components/ClientPage.vue'
 export default {
   name: 'myMusic',
   inject: ['childrenRouterRefresh'],
   props: { closeMusicBox: Function },
-  components: { PlayListPage },
+  components: { MusicListPage, ClientPage },
   data () {
     return {
       // 搜索关键字
@@ -152,10 +155,9 @@ export default {
   computed: {
     ...mapWritableState(musicPlayStore, {
       musicUrl: 'musicUrl',
-      formatLrc: 'formatLrc',
       musicImg: 'musicImg',
       currentSong: 'currentSong',
-      musicList: 'musicList',
+      songList: 'songList',
       currentSongIndex: 'currentSongIndex',
       currentLrcIndex: 'currentLrcIndex',
       currentTime: 'currentTime',
@@ -165,7 +167,9 @@ export default {
       volumeValue: 'volumeValue',
       status: 'status',
       isShowDetails: 'isShowDetails',
-      isPlay: 'isPlay'
+      isPlay: 'isPlay',
+      originLyric: 'originLyric',
+      collectionList: 'getcollectionList',
     }),
     getTotalTime () {
       if (this.currentSong)
@@ -176,10 +180,10 @@ export default {
   },
   methods: {
     ...mapActions(musicPlayStore, {
-      getMusicList: 'getMusicList',
+      setMusicList: 'setMusicList',
       timeFormat: 'timeFormat',
-      getSongDetail: 'getSongDetail',
-      getSongLrc: 'getSongLrc'
+      setSongInfo: 'setSongInfo',
+      setCurrentSongIndex: 'setCurrentSongIndex',
     }),
 
     handlerPlaySong (single) {
@@ -187,7 +191,7 @@ export default {
         this.$refs.audioControls.currentTime = 0
       }
       else {
-        this.getSongDetail(single)
+        this.setSongInfo(single)
       }
     },
 
@@ -218,7 +222,7 @@ export default {
       this.isShowDetails = !this.isShowDetails
     },
     randomPlayId () {
-      return Math.floor(Math.random() * (this.musicList.length + 1))
+      return Math.floor(Math.random() * (this.songList.length + 1))
     },
     changeStatus () {
       // 列表循环
@@ -233,36 +237,38 @@ export default {
       }
     },
     handleBefore () {
+      this.setCurrentSongIndex()
       if (this.status == 1) {
         if (this.currentSongIndex === 0) {
-          let beforeSongIndex = this.musicList.length - 1,
-            beforeSong = this.musicList[beforeSongIndex]
-          this.getSongDetail(beforeSong)
+          let beforeSongIndex = this.songList.length - 1,
+            beforeSong = this.songList[beforeSongIndex]
+          this.handlerPlaySong(beforeSong)
         } else {
-          let beforeSong = this.musicList[this.currentSongIndex - 1]
-          this.getSongDetail(beforeSong)
+          let beforeSong = this.songList[this.currentSongIndex - 1]
+          this.handlerPlaySong(beforeSong)
         }
       } else if (this.status == 2) {
         this.$refs.audioControls.currentTime = 0
       } else {
-        this.getSongDetail(this.musicList[this.randomPlayId()])
+        this.handlerPlaySong(this.songList[this.randomPlayId()])
       }
 
     },
     handleNext () {
+      this.setCurrentSongIndex()
       if (this.status == 1) {
-        if (this.currentSongIndex === this.musicList.length - 1) {
+        if (this.currentSongIndex === this.songList.length - 1) {
           let afterCurrentSongIndex = 0,
-            NextSong = this.musicList[afterCurrentSongIndex]
-          this.getSongDetail(NextSong)
+            NextSong = this.songList[afterCurrentSongIndex]
+          this.handlerPlaySong(NextSong)
         } else {
-          let NextSong = this.musicList[this.currentSongIndex + 1]
-          this.getSongDetail(NextSong)
+          let NextSong = this.songList[this.currentSongIndex + 1]
+          this.handlerPlaySong(NextSong)
         }
       } else if (this.status == 2) {
         this.$refs.audioControls.currentTime = 0
       } else {
-        this.getSongDetail(this.musicList[this.randomPlayId()])
+        this.handlerPlaySong(this.songList[this.randomPlayId()])
       }
     },
     playORpause () {
@@ -286,44 +292,57 @@ export default {
       }
     },
     findCurrentLrcIndex () {
-      for (let i = 0; i < this.formatLrc.length; i++) {
-        if (this.$refs.audioControls.currentTime < this.formatLrc[i].time) {
+      for (let i = 0; i < this.originLyric.length; i++) {
+        if (this.$refs.audioControls.currentTime < this.originLyric[i].time) {
           return i - 1
         }
       }
-      return this.formatLrc.length - 2
+      return this.originLyric.length - 2
     },
     // 根据当前播放时间查找当前歌词 计算偏移量
     findCurrentLrc () {
-      this.currentTime = this.$refs.audioControls.currentTime
-      this.currentLrcIndex = this.findCurrentLrcIndex()
-      if (!this.isProgressMove) {
-        this.percent = Math.floor((this.$refs.audioControls.currentTime / (this.currentSong.duration / 1000)) * 10000) / 100
-        this.fakeTime = this.timeFormat(this.$refs.audioControls.currentTime)
+      if (!this.originLyric) {
+        this.currentTime = this.$refs.audioControls.currentTime
+        if (!this.isProgressMove) {
+          this.percent = Math.floor((this.$refs.audioControls.currentTime / (this.currentSong.duration / 1000)) * 10000) / 100
+          this.fakeTime = this.timeFormat(this.$refs.audioControls.currentTime)
+        }
       }
-      if (this.isShowDetails) {
-        this.offset = this.$refs.bigLrcUl.children[0].clientHeight * this.currentLrcIndex
-        if (this.lrcCanMove)
-          this.$refs.bigLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
-      } else {
-        this.offset = this.$refs.smallLrcUl.children[0].clientHeight * this.currentLrcIndex
-        this.$refs.smallLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
+      else {
+        this.currentTime = this.$refs.audioControls.currentTime
+        this.currentLrcIndex = this.findCurrentLrcIndex()
+        if (!this.isProgressMove) {
+          this.percent = Math.floor((this.$refs.audioControls.currentTime / (this.currentSong.duration / 1000)) * 10000) / 100
+          this.fakeTime = this.timeFormat(this.$refs.audioControls.currentTime)
+        }
+        if (this.isShowDetails) {
+          this.offset = this.$refs.bigLrcUl.children[0].clientHeight * this.currentLrcIndex
+          if (this.lrcCanMove)
+            this.$refs.bigLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
+        } else {
+          this.offset = this.$refs.smallLrcUl.children[0].clientHeight * this.currentLrcIndex
+          this.$refs.smallLrcUl.scrollTo({ top: `${this.offset}`, behavior: 'smooth' })
+        }
       }
     },
     // 播放完  切换下一首
     playNext (val) {
-      // playStyle(val)
-      // 列表循环
+      this.setCurrentSongIndex()
       if (val == 1) {
-        this.timeOutbar(this.getSongDetail(this.musicList[this.currentSongIndex + 1]), 1000)
-        // 单曲循环
-      } else if (val == 2) {
-        this.$refs.audioControls.currentTime = 0
-        this.$refs.audioControls.play()
-        // 随机播放
-      } else {
-        this.timeOutbar(this.getSongDetail(this.musicList[this.randomPlayId()]), 1000)
-      }
+        if (this.currentSongIndex == this.songList.length - 1) {
+          this.currentSongIndex = 0
+          this.timeOutbar(this.handlerPlaySong(this.songList[this.currentSongIndex]), 1000)
+        } else {
+          this.timeOutbar(this.handlerPlaySong(this.songList[this.currentSongIndex + 1]), 1000)
+        }
+    // 单曲循环
+    } else if (val == 2) {
+      this.$refs.audioControls.currentTime = 0
+      this.$refs.audioControls.play()
+    随机播放
+    } else {
+      this.timeOutbar(this.handlerPlaySong(this.songList[this.randomPlayId()]), 1000)
+    }
     },
     timeOutbar (Object, time) {
       setTimeout(() => {
@@ -362,8 +381,6 @@ export default {
   },
   mounted () {
     if (this.isPlay) this.isPlay = false
-    // else if (this.musicImg) this.getSongDetail(this.currentSong)
-    else if (this.originLyric) this.getSongLrc(this.currentSong)
     this.$refs.audioControls.currentTime = this.currentTime
     this.$refs.audioControls.volume = this.volumeValue
   },
@@ -384,12 +401,14 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  width: 20%;
+  width: 10%;
   height: 90%;
+  /* background: #b68282; */
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
-  background-color: var(--white-gray);
+  align-items: flex-start;
+  /* background-color: var(--white-gray); */
+
 }
 
 .close-musicBox {

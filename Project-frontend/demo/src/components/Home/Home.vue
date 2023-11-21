@@ -6,7 +6,7 @@
     </div>
 
     <transition name="music">
-      <MusicList v-show="isShowMusicBox" :closeMusicBox="closeMusicBox"></MusicList>
+      <Music v-show="isShowMusicBox" :closeMusicBox="closeMusicBox"></Music>
     </transition>
 
     <!-- 顶部栏 -->
@@ -47,10 +47,10 @@
 </template>
 
 <script>
-import MusicList from '@/components/MusicList.vue';
-import WrapperPage from '@/layout/WrapperPage.vue'
+import Music from '../Music/index.vue'
+import WrapperPage from '../Wrapper/WrapperPage.vue'
 import { MessageBack } from '@/utils/MessageBack';
-import musicPlayStore from '../store/musicSetting';
+import musicPlayStore from '@/store/musicSetting'
 import { mapWritableState } from 'pinia';
 
 export default {
@@ -69,7 +69,7 @@ export default {
       isChildrenRouterAlive: true,
     };
   },
-  components: { WrapperPage, MusicList },
+  components: { WrapperPage, Music },
   computed: {
     ...mapWritableState(musicPlayStore, {
       musicImg: 'musicImg',
