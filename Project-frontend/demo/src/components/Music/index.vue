@@ -248,7 +248,7 @@ export default {
           this.handlerPlaySong(beforeSong)
         }
       } else if (this.status == 2) {
-        this.$refs.audioControls.currentTime = 0
+        this.handlerPlaySong(this.currentSong)
       } else {
         this.handlerPlaySong(this.songList[this.randomPlayId()])
       }
@@ -266,7 +266,7 @@ export default {
           this.handlerPlaySong(NextSong)
         }
       } else if (this.status == 2) {
-        this.$refs.audioControls.currentTime = 0
+        this.handlerPlaySong(this.currentSong)
       } else {
         this.handlerPlaySong(this.songList[this.randomPlayId()])
       }
@@ -335,14 +335,14 @@ export default {
         } else {
           this.timeOutbar(this.handlerPlaySong(this.songList[this.currentSongIndex + 1]), 1000)
         }
-    // 单曲循环
-    } else if (val == 2) {
-      this.$refs.audioControls.currentTime = 0
-      this.$refs.audioControls.play()
-    随机播放
-    } else {
-      this.timeOutbar(this.handlerPlaySong(this.songList[this.randomPlayId()]), 1000)
-    }
+        // 单曲循环
+      } else if (val == 2) {
+        this.handlerPlaySong(this.currentSong)
+        this.$refs.audioControls.play()
+        随机播放
+      } else {
+        this.timeOutbar(this.handlerPlaySong(this.songList[this.randomPlayId()]), 1000)
+      }
     },
     timeOutbar (Object, time) {
       setTimeout(() => {

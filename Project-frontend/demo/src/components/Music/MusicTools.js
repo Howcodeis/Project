@@ -120,7 +120,7 @@ export const getSongUrl = async (id) => {
   if (res.code == 200) {
     return res.data[0]
   } else {
-    MessageBack.normalBack('warning', "获取歌曲失败!")
+    return MessageBack.normalBack('warning', "获取歌曲失败!")
   }
 }
 
@@ -147,7 +147,7 @@ export const getSongLyric = async (id) => {
     });
     return LyricList
   } else {
-    MessageBack.normalBack('warning', "获取歌词失败!")
+    return MessageBack.normalBack('warning', "获取歌词失败!")
   }
 }
 
@@ -162,7 +162,7 @@ export const getSongDetails = async (id) => {
   if (res.code == 200) {
     return res.songs
   } else {
-    MessageBack.normalBack('warning', "获取歌曲信息失败!")
+    return MessageBack.normalBack('warning', "获取歌曲信息失败!")
   }
 }
 
@@ -176,7 +176,7 @@ export const getSongList = async (keyword) => {
   if (res.code == 200) {
     return res.result.songs
   } else {
-    MessageBack.normalBack('warning', "搜索失败,请检查网络!")
+    return MessageBack.normalBack('warning', "搜索失败,请检查网络!")
   }
 }
 

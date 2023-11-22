@@ -11,10 +11,7 @@ import MusciAxiosInterceptor from "../Interceptors/MusicAxiosInterceptor"
    * @returns {Promise}
    */
 export function reqSearchMusic (keyword) {
-  return new Promise((resolve, reject) => {
-    MusciAxiosInterceptor.get(`/search?keywords=${keyword}`)
-      .then(res => { resolve(res) })
-  })
+  return MusciAxiosInterceptor.get(`/search?keywords=${keyword}`)
 }
 
 /**
@@ -23,11 +20,9 @@ export function reqSearchMusic (keyword) {
  * @returns {Promise}
  */
 export function reqSongUrl (id) {
-  return new Promise((resolve, reject) => {
-    MusciAxiosInterceptor.get(`/song/url/v1?id=${id}&level=exhigh`)
-      .then(res => { resolve(res) })
-  })
+  return MusciAxiosInterceptor.get(`/song/url/v1?id=${id}&level=exhigh`)
 }
+
 
 /**
  * 获取歌曲歌词
@@ -36,10 +31,8 @@ export function reqSongUrl (id) {
  * @returns {Promise}
  */
 export function reqSongLrc (id) {
-  return new Promise((resolve, reject) => {
-    MusciAxiosInterceptor.get(`/lyric?id=${id}`)
-      .then(res => { resolve(res) })
-  })
+  return MusciAxiosInterceptor.get(`/lyric?id=${id}`)
+
 }
 
 /**
@@ -49,8 +42,5 @@ export function reqSongLrc (id) {
  * @returns {Promise}
  */
 export function reqSongDetail (id) {
-  return new Promise((resolve, reject) => {
-    MusciAxiosInterceptor.get(`/song/detail?ids=${id}`)
-      .then(res => { resolve(res) })
-  })
+  return MusciAxiosInterceptor.get(`/song/detail?ids=${id}`)
 }
